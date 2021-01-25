@@ -5,8 +5,8 @@
 #'
 #' @param dataset a 2-level list containing, for each domain, the names of the corresponding input tables of data
 #' @param 	codvar a 3-level list containing, for each input table of data and each domain, the name(s) of the column(s) containing the codes of interest
-#' @param 	datevar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing dates (only if extension="csv"), to be saved as dates in the output
-#' @param numericvar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing numbers (only if extension="csv"), to be saved as a number in the output
+#' @param 	datevar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing dates (only if extension=”csv”), to be saved as dates in the output
+#' @param numericvar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing numbers (only if extension=”csv”), to be saved as a number in the output
 #' @param EAVtables (optional): a 2-level list specifying, for each domain, tables in a Entity-Attribute-Value structure; each table is listed with the name of two columns: the one contaning attributes and the one containing values
 #' @param EAVattributes (optional): a 3-level list specifying, for each domain and table in a Entity-Attribute-Value structure, the attributes whose values should be browsed to retrieve codes belonging to that domain; each attribute is listed along with its coding system  
 #' @param dateformat (optional): a string containing the format of the dates in the input tables of data (only if -datevar- is indicated); the string must be in one of the following:
@@ -17,7 +17,7 @@
 #' @param concept_set_codes_excl (optional) a 3-level list containing, for each concept set, for each coding system, the list of the corresponding codes to be used as exclusion criteria for records: records must be excluded if the their code(s) starts with at least one string in this list; the match is executed ignoring points
 #' @param concept_set_names (optional) a vector containing the names of the concept sets to be processed; if this is missing, all the concept sets included in the previous lists are processed
 #' @param vocabulary (optional) a 3-level list containing, for each table of data and data domain, the name of the column containing the vocabulary of the column(s) -codvar-
-  #' @param addtabcol a logical parameter, by default set to TRUE: if so, the columns "Table_cdm" and "Col" are added to the output, indicating respectively from which original table and column the code is taken.
+#' @param addtabcol a logical parameter, by default set to TRUE: if so, the columns "Table_cdm" and "Col" are added to the output, indicating respectively from which original table and column the code is taken.
 #' @param verbose a logical parameter, by default set to FALSE. If it is TRUE additional intermediate output datasets will be shown in the R environment
 #' @param discard_from_environment (optional) a logical parameter, by default set to FALSE. If it is TRUE, the output datasets are removed from the global environment
 #' @param dirinput (optional) the directory where the input tables of data are stored. If not provided the working directory is considered.
@@ -39,7 +39,7 @@
 CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattributes,dateformat, rename_col,
                                      concept_set_domains,concept_set_codes,concept_set_codes_excl,concept_set_names,vocabulary,
                                      addtabcol=T, verbose=F,discard_from_environment=F,
-                                     dirinput,diroutput,extension) {
+                                     dirinput,diroutput,extension,vocabularies_with_dot_wildcard) {
   if (!require("haven")) install.packages("haven")
   library(haven)
   if (!require("stringr")) install.packages("stringr")
@@ -80,9 +80,9 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
   }
   
   dataset1<-list()
-
+  
   for (dom in used_domains) {
-    if (!missing(EAVtables) & length(EAVattributes)!=0){
+    if (!missing(EAVtables) & !missing(EAVattributes)){
       if (dom %in% names(EAVtables)){
         dataset1[[dom]]<-dataset[[dom]]
         for (f in 1:length(EAVtables[[dom]])){
@@ -123,23 +123,26 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       for (concept in concept_set_dom[[dom]]) {
         if (concept %in% concept_set_names) {
           print(paste("concept set",concept))
-          for (p in 1:length(EAVtables[[dom]])){
-            if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]){
-              used_dfAEV<-data.table()             
-              for (elem1 in names(EAVattributes[[concept_set_domains[[concept]]]][[df2]])) {
-                for (i in 1:length(EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]])) {
-                  if (length(EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[1]])>=2){
-                    used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[2]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[1]] & get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[3]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[2]],],fill=T)
-                  }else{ 
-                    used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[2]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[1]],])
+          if ( !missing(EAVtables)){
+            for (p in 1:length(EAVtables[[dom]])){
+              if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]){
+                used_dfAEV<-data.table()             
+                for (elem1 in names(EAVattributes[[concept_set_domains[[concept]]]][[df2]])) {
+                  for (i in 1:length(EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]])) {
+                    if (length(EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[1]])>=2){
+                      used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[2]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[1]] & get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[3]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[2]],],fill=T)
+                    }else{ 
+                      used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[2]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[1]],])
+                    }
                   }
                 }
+                used_df<-used_dfAEV
               }
-              used_df<-used_dfAEV
             }
           }
           
           for (col in codvar[[concept_set_domains[[concept]]]][[df2]]) {
+            used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
             for (type_cod in names(concept_set_codes[[concept]])) {
               for (single_cod in concept_set_codes[[concept]][[type_cod]]) {
                 if (single_cod == "ALL_CODES") {
@@ -149,14 +152,22 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 }else{if ((!missing(vocabulary))) {################### IF I GIVE VOCABULARY IN INPUT
                   if (df2 %in% dataset[[dom]]){
                     if (dom %in% names(vocabulary)) {
-                      used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod)))) & get(vocabulary[[dom]][[df2]])==type_cod,c("Filter",paste0("Col_",concept)):= list(1,col)]
+                      if (!missing(vocabularies_with_dot_wildcard)){
+                        if (type_cod %in% vocabularies_with_dot_wildcard){
+                          used_df<-used_df[(str_detect(get(col),paste0("^",single_cod))) & get(vocabulary[[dom]][[df2]])==type_cod,c("Filter",paste0("Col_",concept)):= list(1,col)]
+                        }else{
+                          used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod)))) & get(vocabulary[[dom]][[df2]])==type_cod,c("Filter",paste0("Col_",concept)):= list(1,col)]
+                        }
+                      }else{
+                        used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,col)]
+                      }
                     }else{
-                      used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,col)]
+                      used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,col)]
                     }
                   }else{
                     for (p in 1:length(EAVtables[[dom]])){
                       if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]){
-                        used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,list(c(get(EAVtables[[dom]][[p]][[1]][[2]]),get(EAVtables[[dom]][[p]][[1]][[3]]))))]
+                        used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,list(c(get(EAVtables[[dom]][[p]][[1]][[2]]),get(EAVtables[[dom]][[p]][[1]][[3]]))))]
                       }
                     }
                   }
@@ -164,10 +175,10 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                   if (df2 %!in% dataset[[dom]]) { 
                     for (p in 1:length(EAVtables[[dom]])){
                       if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]){
-                        used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,list(c(get(EAVtables[[dom]][[p]][[1]][[2]]),get(EAVtables[[dom]][[p]][[1]][[3]]))))]
+                        used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,list(c(get(EAVtables[[dom]][[p]][[1]][[2]]),get(EAVtables[[dom]][[p]][[1]][[3]]))))]
                       }
                     }
-                  }else{used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,col)]
+                  }else{used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod)))),c("Filter",paste0("Col_",concept)):= list(1,col)]
                   }
                 }
                 }
@@ -182,20 +193,30 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 if ((!missing(vocabulary))) {
                   if (df2 %in% dataset[[dom]]){
                     if (dom %in% names(vocabulary)) {
-                      used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod2)))) & get(vocabulary[[dom]][[df2]])==type_cod_2,Filter:=0]
+                      if (!missing(vocabularies_with_dot_wildcard)){
+                        if (type_cod_2 %in% vocabularies_with_dot_wildcard){
+                          used_df<-used_df[(str_detect(get(col),paste0("^",single_cod2))) & get(vocabulary[[dom]][[df2]])==type_cod_2,Filter:=0]
+                        }else{
+                          used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod2)))) & get(vocabulary[[dom]][[df2]])==type_cod_2,Filter:=0]
+                        }
+                      }else{
+                        used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
+                      }
                     }else{
-                      used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
+                      used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
                     }
                   }else{
-                    used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
+                    used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
                   }
                 }else{
-                  used_df<-used_df[(str_detect(gsub("\\.","",get(col)),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
+                  used_df<-used_df[(str_detect(get(paste0(col, "_tmp")),gsub("\\.","",paste0("^",single_cod2)))),Filter:=0]
                 }
               }
             }
+            used_df<-used_df[, paste0(col, "_tmp") := NULL]
           } 
           
+
           if ("Filter" %in% colnames(used_df)) {
             used_df<-used_df[Filter == 1,General:=1]
             Newfilter1 <- paste0("Filter_",concept)
@@ -224,11 +245,12 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       
       #keep only the rows that have matched codes
       filtered_df <- used_df[General == 1,] [,Table_cdm:=df2] 
+
       if (verbose == F) {  assign(paste0("FILTERED","_",df2),filtered_df)
       }else{
         assign(paste0(dom,"_","FILTERED","_",df2),filtered_df,envir = parent.frame())
       }
-      
+
       #split the dataset with respect to the concept set
       for (concept in concept_set_dom[[dom]]) {
         if (concept %in% concept_set_names) {
@@ -246,7 +268,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
           filtered_df2[,]<-NA
           filtered_df2<-filtered_df2[,!grep("^Col",names(filtered_df2)),with = F]
           }
-          
+
           if (verbose == F) {
             assign(paste0(concept,"_",df2),filtered_df2)
           }else{
@@ -255,7 +277,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         }
       }
     }
-    
+
     ###########append all the datasets related to the same concept
     for (concept in concept_set_dom[[dom]]) {
       if (concept %in% concept_set_names) {

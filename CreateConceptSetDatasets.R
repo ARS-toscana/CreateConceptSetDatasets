@@ -145,6 +145,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
           for (col in codvar[[concept_set_domains[[concept]]]][[df2]]) {
             used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
             for (type_cod in names(concept_set_codes[[concept]])) {
+              codes_rev <- concept_set_codes[[concept]][[type_cod]]
               for (single_cod in concept_set_codes[[concept]][[type_cod]]) {
                 if (single_cod == "ALL_CODES") {
                   print("allcodes")

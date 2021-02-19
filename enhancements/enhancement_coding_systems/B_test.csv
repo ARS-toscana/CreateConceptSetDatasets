@@ -1,0 +1,4 @@
+person_id,start_date_record,end_date_record,event_code,event_record_vocabulary,text_linked_to_event_code,event_free_text,present_on_admission,meaning_of_event,origin_of_event,visit_occurrence_id
+PERSON0004,20130620,,153.4,ICD9,,,,HOSP,XX,ID_4
+PERSON0009,20050717,,F245.001,READ,,,,PC,XX,ID_9
+PERSON0010,20050510,,F2...41,READ,,,,PC,XX,ID_10

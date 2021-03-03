@@ -204,7 +204,11 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                       if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
                         used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\.", "", paste(paste0("^", codes_rev), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
                       }
+                    } else {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\.", "", paste(paste0("^", codes_rev), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
                     }
+                  } else {
+                    used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\.", "", paste(paste0("^", codes_rev), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
                   }
                 } else {
                   if (df2 %!in% dataset[[dom]]) { 

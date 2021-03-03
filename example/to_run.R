@@ -7,9 +7,9 @@ thisdir<-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 
 #load parameters
-source(paste0(thisdir,"/parameters_program.R"))
-source(paste0(thisdir,"/parameters_CDM.R"))
-source(paste0(thisdir,"/concept_sets.R"))
+source(paste0(thisdir,"/p_parameters/parameters_program.R"))
+source(paste0(thisdir,"/p_parameters/parameters_CDM.R"))
+source(paste0(thisdir,"/p_parameters/concept_sets.R"))
 
 
 

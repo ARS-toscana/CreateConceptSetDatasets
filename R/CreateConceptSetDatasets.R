@@ -145,7 +145,6 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
             if (dom %in% names(vocabulary)) {
               if (df2 %in% names(vocabulary[[dom]])) {
                 cod_system_indataset1<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
-                # cod_system_indataset<-Reduce(intersect, list(cod_system_indataset1,names(concept_set_codes[[concept]]))) 
                 cod_system_indataset<-intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
                 
               }else{
@@ -159,16 +158,10 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
           }
           
           if (length(cod_system_indataset)==0) { 
-            used_df2<-used_df[0,]
-            used_df2<-used_df2[,Filter:=numeric()]
-            if (verbose == F) {
-              assign(paste0(concept,"_",df2),used_df2)
-            }else{
-              assign(paste0(concept,"_",df2),used_df2,envir = parent.frame())
-            }
+            used_df[,c("Filter", paste0("Col_", concept)) := list(0, NA)]
           }else{
             for (col in codvar[[concept_set_domains[[concept]]]][[df2]]) {
-              used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
+              used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
               for (type_cod in cod_system_indataset) {
                 stop = FALSE
                 codes_rev <- concept_set_codes[[concept]][[type_cod]]
@@ -219,11 +212,9 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 }
               }
             }
-          }
-          
-          
-          #if we have codes to exclude
-          if (!exists(paste0(concept,"_",df2))){
+            
+            
+            #if we have codes to exclude
             if (!missing(concept_set_codes_excl)){
               if ((!missing(vocabulary))) {
                 if (dom %in% names(vocabulary)) {
@@ -263,17 +254,16 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 } else {
                   used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\.", "", paste(paste0("^", codes_rev), collapse = "|")))), Filter := 0]
                 }
-                #}
               }
-              
-              used_df[, paste0(col, "_tmp") := NULL]
             }
             
-            if ("Filter" %in% colnames(used_df)) {
-              used_df[Filter == 1,General:=1]
-              Newfilter1 <- paste0("Filter_",concept)
-              setnames(used_df,old = "Filter",new = Newfilter1)
-            }
+            used_df[, paste0(col, "_tmp") := NULL]
+          }
+          
+          if ("Filter" %in% colnames(used_df)) {
+            used_df[Filter == 1,General:=1]
+            Newfilter1 <- paste0("Filter_",concept)
+            setnames(used_df,old = "Filter",new = Newfilter1)
           }
         }
       }
@@ -309,28 +299,26 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       
       #split the dataset with respect to the concept set
       for (concept in concept_set_dom[[dom]]) {
-        if (!exists(paste0(concept,"_",df2))){
-          if (concept %in% concept_set_names) {
-            if (paste0("Filter_",concept) %in% colnames(filtered_df)) {
-              setnames(filtered_df,unique(names(filtered_df[,grepl(paste0("\\b","Filter_",concept,"\\b"),colnames(filtered_df)), with = F])),"Filter")
-              filtered_df2 <- filtered_df[Filter == 1,] [,"General":=NULL]
-              filtered_df2 <- filtered_df2[,!grep("^Filter",names(filtered_df2)),with = F]
-              if (paste0("Col_",concept) %in% colnames(filtered_df2)) {
-                setnames(filtered_df2,unique(names(filtered_df2[,grepl(paste0("\\b","Col_",concept,"\\b"),colnames(filtered_df2)), with = F])),"Col")
-                filtered_df2 <- filtered_df2[,!grep("^Col_",names(filtered_df2)),with = F]
-              }
-              Newfilter2 <- paste0("Filter_",concept)
-              setnames(filtered_df,old = "Filter",new = Newfilter2)
-            }else{filtered_df2<-used_df[1,!grep("^Filter",names(used_df)),with = F] [,"General":=NULL]
-            filtered_df2[,]<-NA
-            filtered_df2<-filtered_df2[,!grep("^Col",names(filtered_df2)),with = F]
+        if (concept %in% concept_set_names) {
+          if (paste0("Filter_",concept) %in% colnames(filtered_df)) {
+            setnames(filtered_df,unique(names(filtered_df[,grepl(paste0("\\b","Filter_",concept,"\\b"),colnames(filtered_df)), with = F])),"Filter")
+            filtered_df2 <- filtered_df[Filter == 1,] [,"General":=NULL]
+            filtered_df2 <- filtered_df2[,!grep("^Filter",names(filtered_df2)),with = F]
+            if (paste0("Col_",concept) %in% colnames(filtered_df2)) {
+              setnames(filtered_df2,unique(names(filtered_df2[,grepl(paste0("\\b","Col_",concept,"\\b"),colnames(filtered_df2)), with = F])),"Col")
+              filtered_df2 <- filtered_df2[,!grep("^Col_",names(filtered_df2)),with = F]
             }
-            
-            if (verbose == F) {
-              assign(paste0(concept,"_",df2),filtered_df2)
-            }else{
-              assign(paste0(concept,"_",df2),filtered_df2,envir = parent.frame())
-            }
+            Newfilter2 <- paste0("Filter_",concept)
+            setnames(filtered_df,old = "Filter",new = Newfilter2)
+          }else{filtered_df2<-used_df[1,!grep("^Filter",names(used_df)),with = F] [,"General":=NULL]
+          filtered_df2[,]<-NA
+          filtered_df2<-filtered_df2[,!grep("^Col",names(filtered_df2)),with = F]
+          }
+          
+          if (verbose == F) {
+            assign(paste0(concept,"_",df2),filtered_df2)
+          }else{
+            assign(paste0(concept,"_",df2),filtered_df2,envir = parent.frame())
           }
         }
       }

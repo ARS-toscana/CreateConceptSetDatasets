@@ -11,7 +11,7 @@ extension <- c(".csv")
 
 setwd("..")
 dirbase<-getwd()
-source(paste0(dirbase,"/","CreateConceptSetDatasets.R"))
+source(paste0(dirbase,"/R/","CreateConceptSetDatasets.R"))
 
 ###################################################################
 # CREATE FOLDERS

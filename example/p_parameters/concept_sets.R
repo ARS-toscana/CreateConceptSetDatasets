@@ -18,7 +18,7 @@ concept_set_domains[["OTHER_AED"]]="Medicines"
 concept_set_codes_our_study <- vector(mode="list")
 
 
-concept_set_codes_our_study[["DIABETES"]][["ICD9"]]=c("250")
+concept_set_codes_our_study[["DIABETES"]][["ICD9"]]=c("2*0")
 concept_set_codes_our_study[["DIABETES"]][["ICD10"]]=c("E10","E11")
 concept_set_codes_our_study[["INSULIN"]][["ATC"]]= c("A10A")
 concept_set_codes_our_study[["OTHER_AED"]][["ATC"]]=c("A10B")

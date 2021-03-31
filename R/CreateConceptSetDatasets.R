@@ -40,8 +40,6 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                                      concept_set_domains,concept_set_codes,concept_set_codes_excl,concept_set_names,vocabulary,
                                      addtabcol=T, verbose=F,discard_from_environment=F,
                                      dirinput,diroutput,extension,vocabularies_with_dot_wildcard) {
-  if (!require("haven")) install.packages("haven")
-  library(haven)
   if (!require("stringr")) install.packages("stringr")
   library(stringr)
   if (!require("purrr")) install.packages("purrr") #flatten
@@ -56,6 +54,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
   '%not in%' <- Negate(`%in%`)
 
   if (missing(diroutput)) diroutput<-getwd()
+  if (missing(dirinput)) dirinput<-getwd()
   #Check that output folder exist otherwise create it
 
   suppressWarnings( if (!(file.exists(diroutput))){
@@ -79,43 +78,34 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
 
   dataset1<-list()
 
-  for (dom in used_domains) {
-    if (!missing(EAVtables) & !missing(EAVattributes)){
-      if (dom %in% names(EAVtables)){
-        dataset1[[dom]]<-dataset[[dom]]
-        for (f in 1:length(EAVtables[[dom]])){
-          dataset1[[dom]]<-append(dataset1[[dom]],EAVtables[[dom]][[f]][[1]][[1]])
-        }
-      }else{dataset1[[dom]]<-dataset[[dom]]}
-    }else{dataset1[[dom]]<-dataset[[dom]]}
-  }
+  #TODO check if EAVtables, EAVattributes and concept_set_names are truly optional. ALmost surely they are not implemented correctly
+  #TODO ask about local scope
 
   for (dom in used_domains) {
-    if (missing(EAVtables) | missing(EAVattributes) | dom %not in% names(EAVtables)){
-      if (dom %in% names(EAVtables)){
-        dataset1[[dom]]<-dataset[[dom]]
-        for (f in 1:length(EAVtables[[dom]])){
-          dataset1[[dom]]<-append(dataset1[[dom]],EAVtables[[dom]][[f]][[1]][[1]])
-        }
-      }else{dataset1[[dom]]<-dataset[[dom]]}
-    }else{dataset1[[dom]]<-dataset[[dom]]}
-  }
 
-  for (dom in used_domains) {
-    print(paste("I'm analysing domain",dom))
+    dataset1[[dom]] <- dataset[[dom]]
+    if (exists("EAVtables") & exists("EAVattributes") & dom %in% names(EAVtables)) {
+      for (EAVtab_dom in EAVtables[[dom]]) {
+        dataset1[[dom]] <- append(dataset1[[dom]], EAVtab_dom[[1]][[1]])
+      }
+    }
+
+    print(paste("I'm analysing domain", dom))
     for (df2 in dataset1[[dom]]) {
-      print(paste0("I'm analysing table ",df2," [for domain ",dom,"]"))
-      if (missing(dirinput)) dirinput<-getwd()
-      if (extension == "dta") {
-        used_df <- as.data.table(read_dta(paste0(dirinput,"/",df2,".",extension)))
+      print(paste0("I'm analysing table ", df2, " [for domain ", dom, "]"))
+      path = paste0(dirinput,"/",df2,".",extension)
+      if (extension == "dta") {used_df <- as.data.table(haven::read_dta(path))
       } else if (extension == "csv") {
+        #NOTE why this option??
         options(readr.num_columns = 0)
-        used_df <- fread(paste0(dirinput,"/",df2,".",extension))
-      }
-      else if (extension == "RData") {
-        assign('used_df', get(load(paste0(dirinput,"/",df2,".",extension))))
-      }
+        used_df <- fread(path)
+      } else if (extension == "RData") {assign('used_df', get(load(path)))}
+      # TODO add else
+    }
+  }
 
+  for (dom in used_domains) {
+    for (df2 in dataset1[[dom]]) {
       if (!missing(dateformat)){
         for (n in 1:length(datevar[[dom]][[df2]])) {
           if(str_count(dateformat, "m")==3 |str_count(dateformat, "M")==3) {

@@ -62,21 +62,19 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
     dir.create(file.path( diroutput))
   })
 
-  if(missing(concept_set_names)){
-    concept_set_names=unique(names(concept_set_domains))
+  used_domains<-unique(concept_set_domains)
+
+  if (missing(concept_set_names)) {
+    concept_set_names = unique(names(concept_set_domains))
+  } else {
+    concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
+    dataset <- dataset[names(dataset) %in%  used_domains]
   }
 
-  if(!missing(concept_set_names)){
-    concept_set_domains<-concept_set_domains[names(concept_set_domains) %in% concept_set_names]
-    dataset<-dataset[names(dataset) %in%  unique(flatten_chr(concept_set_domains))]
-  }
-  used_domains<-unique(concept_set_domains)
-  concept_set_dom <- vector(mode = "list",length = length(used_domains))
-  names(concept_set_dom) = unique(flatten_chr(concept_set_domains))
-  for (i in 1:length(concept_set_dom)) {
-    for (j in 1:length(concept_set_domains))
-      if (names(concept_set_dom[i]) == concept_set_domains[j])
-        concept_set_dom[[i]] = append(flatten_chr(concept_set_dom[i]),names(concept_set_domains[j]))
+  concept_set_dom <- vector(mode = "list", length = length(used_domains))
+  names(concept_set_dom) = used_domains
+  for (i in seq_along(concept_set_dom)) {
+    concept_set_dom[[i]] <- names(which(names(concept_set_dom[i]) == concept_set_domains))
   }
 
   dataset1<-list()

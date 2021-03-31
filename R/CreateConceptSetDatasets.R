@@ -101,11 +101,21 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         used_df <- fread(path)
       } else if (extension == "RData") {assign('used_df', get(load(path)))}
       # TODO add else
-    }
-  }
 
-  for (dom in used_domains) {
-    for (df2 in dataset1[[dom]]) {
+      temp = copy(used_df)
+
+      if (exists("dateformat")){
+        for (datevar_dom_df in datevar[[dom]][[df2]]) {
+          first_char <- substring(dateformat, 1,1)
+          if (str_count(dateformat, "m") == 3 | str_count(dateformat, "M") == 3) {
+            temp[,datevar_dom_df]<-as.Date(temp[,get(datevar_dom_df)],"%d%b%Y")
+          } else if (first_char %in% c("Y", "y")) {
+            temp[,datevar_dom_df]<-ymd(temp[,get(datevar_dom_df)])
+          }else if (first_char %in% c("D", "d")) {
+            temp[,datevar_dom_df]<-dmy(temp[,get(datevar_dom_df)])
+          }
+        }
+      }
       if (!missing(dateformat)){
         for (n in 1:length(datevar[[dom]][[df2]])) {
           if(str_count(dateformat, "m")==3 |str_count(dateformat, "M")==3) {
@@ -117,7 +127,35 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
           }
         }
       }
+      print(identical(temp, used_df))
+    }
+  }
 
+  for (dom in used_domains) {
+    print(paste("I'm analysing domain", dom))
+    for (df2 in dataset1[[dom]]) {
+      print(paste0("I'm analysing table ", df2, " [for domain ", dom, "]"))
+      if (extension == "dta") {
+        used_df <- as.data.table(read_dta(paste0(dirinput,"/",df2,".",extension)))
+      } else if (extension == "csv") {
+        options(readr.num_columns = 0)
+        used_df <- fread(paste0(dirinput,"/",df2,".",extension))
+      }
+      else if (extension == "RData") {
+        assign('used_df', get(load(paste0(dirinput,"/",df2,".",extension))))
+      }
+
+      if (!missing(dateformat)){
+        for (n in 1:length(datevar[[dom]][[df2]])) {
+          if(str_count(dateformat, "m")==3 |str_count(dateformat, "M")==3) {
+            used_df[,datevar[[dom]][[df2]][[n]]]<-as.Date(used_df[,get(datevar[[dom]][[df2]][[n]])],"%d%b%Y")
+          } else if (substring(dateformat, 1,1)=="Y" | substring(dateformat, 1,1)=="y" ) {
+            used_df[,datevar[[dom]][[df2]][[n]]]<-ymd(used_df[,get(datevar[[dom]][[df2]][[n]])])
+          }else if (substring(dateformat, 1,1)=="D" | substring(dateformat, 1,1)=="d" ) {
+            used_df[,datevar[[dom]][[df2]][[n]]]<-dmy(used_df[,get(datevar[[dom]][[df2]][[n]])])
+          }
+        }
+      }
       used_df[, General:=0]
       used_df0<-as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
       #for each dataset search for the codes in all concept sets

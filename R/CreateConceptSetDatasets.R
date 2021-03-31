@@ -53,7 +53,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
   if (!require("lubridate")) install.packages("lubridate")
   library(lubridate)
 
-  '%!in%' <- function(x,y)!('%in%'(x,y))
+  '%not in%' <- Negate(`%in%`)
 
   if (missing(diroutput)) diroutput<-getwd()
   #Check that output folder exist otherwise create it
@@ -88,7 +88,20 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         }
       }else{dataset1[[dom]]<-dataset[[dom]]}
     }else{dataset1[[dom]]<-dataset[[dom]]}
+  }
 
+  for (dom in used_domains) {
+    if (missing(EAVtables) | missing(EAVattributes) | dom %not in% names(EAVtables)){
+      if (dom %in% names(EAVtables)){
+        dataset1[[dom]]<-dataset[[dom]]
+        for (f in 1:length(EAVtables[[dom]])){
+          dataset1[[dom]]<-append(dataset1[[dom]],EAVtables[[dom]][[f]][[1]][[1]])
+        }
+      }else{dataset1[[dom]]<-dataset[[dom]]}
+    }else{dataset1[[dom]]<-dataset[[dom]]}
+  }
+
+  for (dom in used_domains) {
     print(paste("I'm analysing domain",dom))
     for (df2 in dataset1[[dom]]) {
       print(paste0("I'm analysing table ",df2," [for domain ",dom,"]"))
@@ -199,7 +212,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                     }
                   }
                 } else {
-                  if (df2 %!in% dataset[[dom]]) {
+                  if (df2 %not in% dataset[[dom]]) {
                     for (p in 1:length(EAVtables[[dom]])) {
                       if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
                         used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]

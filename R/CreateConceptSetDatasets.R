@@ -102,32 +102,72 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       } else if (extension == "RData") {assign('used_df', get(load(path)))}
       # TODO add else
 
-      temp = copy(used_df)
-
       if (exists("dateformat")){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
           first_char <- substring(dateformat, 1,1)
-          if (str_count(dateformat, "m") == 3 | str_count(dateformat, "M") == 3) {
-            temp[,datevar_dom_df2] <- as.Date(temp[,get(datevar_dom_df2)],"%d%b%Y")
+          if (stringr::str_count(dateformat, "m") == 3 | stringr::str_count(dateformat, "M") == 3) {
+            used_df[,datevar_dom_df2] <- as.Date(used_df[,get(datevar_dom_df2)],"%d%b%Y")
           } else if (first_char %in% c("Y", "y")) {
-            temp[,datevar_dom_df2] <- lubridate::ymd(temp[,get(datevar_dom_df2)])
+            used_df[,datevar_dom_df2] <- lubridate::ymd(used_df[,get(datevar_dom_df2)])
           } else if (first_char %in% c("D", "d")) {
-            temp[,datevar_dom_df2] <- lubridate::dmy(temp[,get(datevar_dom_df2)])
+            used_df[,datevar_dom_df2] <- lubridate::dmy(used_df[,get(datevar_dom_df2)])
           }
         }
       }
-      if (!missing(dateformat)){
-        for (n in 1:length(datevar[[dom]][[df2]])) {
-          if(str_count(dateformat, "m")==3 | str_count(dateformat, "M")==3) {
-            used_df[,datevar[[dom]][[df2]][[n]]]<-as.Date(used_df[,get(datevar[[dom]][[df2]][[n]])],"%d%b%Y")
-          } else if (substring(dateformat, 1,1)=="Y" | substring(dateformat, 1,1)=="y" ) {
-            used_df[,datevar[[dom]][[df2]][[n]]]<-ymd(used_df[,get(datevar[[dom]][[df2]][[n]])])
-          }else if (substring(dateformat, 1,1)=="D" | substring(dateformat, 1,1)=="d" ) {
-            used_df[,datevar[[dom]][[df2]][[n]]]<-dmy(used_df[,get(datevar[[dom]][[df2]][[n]])])
+
+      used_df[, General:=0]
+      used_df0 <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
+      #for each dataset search for the codes in all concept sets
+      for (concept in concept_set_dom[[dom]]) {
+        if (concept %in% concept_set_names) {
+          print(paste("concept set", concept))
+          if (exists("EAVtables")) {
+            for (p in seq_along(EAVtables[[dom]])) {
+              if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
+                used_dfAEV<-data.table()
+                for (elem1 in names(EAVattributes[[concept_set_domains[[concept]]]][[df2]])) {
+                  #TODO improve naming of lenght_first_df2, df2_elem and EAV_concept_p
+                  conc_dom <- concept_set_domains[[concept]]
+                  lenght_first_df2 <- length(EAVattributes[[conc_dom]][[df2]][[elem1]][[1]])
+                  EAV_concept_p <- EAVtables[[conc_dom]][[p]]
+                  for (df2_elem in EAVattributes[[conc_dom]][[df2]][[elem1]]) {
+                    if (lenght_first_df2 >= 2){
+                      used_dfAEV <- rbind(used_dfAEV, used_df[get(EAV_concept_p[[1]][[2]]) == df2_elem[[1]] & get(EAV_concept_p[[1]][[3]])==df2_elem[[2]],],fill=T)
+                    }else{
+                      used_dfAEV <- rbind(used_dfAEV, used_df[get(EAV_concept_p[[2]]) == df2_elem[[1]],])
+                    }
+                  }
+                }
+                used_df<-used_dfAEV
+              }
+            }
           }
         }
+
+        if ((!missing(vocabulary))) {
+          if (dom %in% names(vocabulary)) {
+            if (df2 %in% names(vocabulary[[dom]])) {
+              cod_system_indataset1<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
+              cod_system_indataset<-intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
+
+            }else{
+              cod_system_indataset<-names(concept_set_codes[[concept]])
+            }
+          }else{
+            cod_system_indataset<-names(concept_set_codes[[concept]])
+          }
+        }else{
+          cod_system_indataset<-names(concept_set_codes[[concept]])
+        }
+
+        if (exists("vocabulary") & dom %in% names(vocabulary) & df2 %in% names(vocabulary[[dom]])) {
+          cod_system_indataset1<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
+          temp_df<-intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
+        } else {
+          temp_df<-names(concept_set_codes[[concept]])
+        }
+        print(identical(cod_system_indataset, temp_df))
       }
-      print(identical(temp, used_df))
     }
   }
 
@@ -169,9 +209,9 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 for (elem1 in names(EAVattributes[[concept_set_domains[[concept]]]][[df2]])) {
                   for (i in 1:length(EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]])) {
                     if (length(EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[1]])>=2){
-                      used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[2]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[1]] & get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[3]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[2]],],fill=T)
+                      used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[2]])==df2_elem[[1]] & get(EAVtables[[concept_set_domains[[concept]]]][[p]][[1]][[3]])==df2_elem[[2]],],fill=T)
                     }else{
-                      used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[2]])==EAVattributes[[concept_set_domains[[concept]]]][[df2]][[elem1]][[i]][[1]],])
+                      used_dfAEV<-rbind(used_dfAEV,used_df[get(EAVtables[[concept_set_domains[[concept]]]][[p]][[2]])==df2_elem[[1]],])
                     }
                   }
                 }

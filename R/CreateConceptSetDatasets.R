@@ -150,7 +150,6 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         } else {
           temp_df<-names(concept_set_codes[[concept]])
         }
-        print(identical(cod_system_indataset, temp_df))
       }
     }
   }

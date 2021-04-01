@@ -119,6 +119,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       used_df0 <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
       #for each dataset search for the codes in all concept sets
       for (concept in concept_set_dom[[dom]]) {
+        conc_dom <- concept_set_domains[[concept]]
         if (concept %in% concept_set_names) {
           print(paste("concept set", concept))
           if (exists("EAVtables")) {
@@ -127,7 +128,6 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 used_dfAEV<-data.table()
                 for (elem1 in names(EAVattributes[[concept_set_domains[[concept]]]][[df2]])) {
                   #TODO improve naming of lenght_first_df2, df2_elem and EAV_concept_p
-                  conc_dom <- concept_set_domains[[concept]]
                   lenght_first_df2 <- length(EAVattributes[[conc_dom]][[df2]][[elem1]][[1]])
                   EAV_concept_p <- EAVtables[[conc_dom]][[p]]
                   for (df2_elem in EAVattributes[[conc_dom]][[df2]][[elem1]]) {
@@ -146,10 +146,111 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
 
         if (exists("vocabulary") & dom %in% names(vocabulary) & df2 %in% names(vocabulary[[dom]])) {
           cod_system_indataset1<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
-          temp_df<-intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
+          cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
         } else {
-          temp_df<-names(concept_set_codes[[concept]])
+          cod_system_indataset <- names(concept_set_codes[[concept]])
         }
+
+        if (length(cod_system_indataset) == 0) {
+          used_df[,c("Filter", paste0("Col_", concept)) := list(0, NA)]
+        } else {
+          for (col in codvar[[conc_dom]][[df2]]) {
+            used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
+            for (type_cod in cod_system_indataset) {
+              stop = FALSE
+              codes_rev <- concept_set_codes[[concept]][[type_cod]]
+              for (single_cod in codes_rev) {
+                if (single_cod == "ALL_CODES") {
+                  print("allcodes")
+                  used_df[,Filter:=1]
+                  # NOTE codvar[[dom]][[df2]][1] == col, or not?
+                  used_df[,paste0("Col_",concept) := codvar[[dom]][[df2]][1]]
+                  stop = TRUE
+                  break
+                }
+              }
+              if (stop == TRUE) {
+                next
+              }
+
+              #1111111111111111111111111111
+
+              if ((!missing(vocabulary))) {################### IF I GIVE VOCABULARY IN INPUT
+                if (df2 %in% dataset[[dom]]) {
+                  if (dom %in% names(vocabulary)) {
+                    if (!missing(vocabularies_with_dot_wildcard)) {
+                      if (type_cod %in% vocabularies_with_dot_wildcard) {
+                        used_df[(str_detect(get(col), paste(paste0("^", codes_rev), collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
+                      } else {
+                        used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
+                      }
+                    } else {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
+                    }
+                  } else {
+                    used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
+                  }
+                } else {
+                  for (p in 1:length(EAVtables[[dom]])) {
+                    if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
+                    }
+                  }
+                }
+              } else {
+                if (df2 %not in% dataset[[dom]]) {
+                  for (p in 1:length(EAVtables[[dom]])) {
+                    if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
+                    }
+                  }
+                } else {
+                  used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
+                }
+              }
+
+              # 2222222222222222222222222222222
+
+              if ((!missing(vocabulary))) {################### IF I GIVE VOCABULARY IN INPUT
+                if (df2 %in% dataset[[dom]]) {
+                  if (dom %in% names(vocabulary)) {
+                    if (!missing(vocabularies_with_dot_wildcard)) {
+                      if (type_cod %in% vocabularies_with_dot_wildcard) {
+                        used_df[(str_detect(get(col), paste(paste0("^", codes_rev), collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
+                      } else {
+                        used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
+                      }
+                    } else {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
+                    }
+                  } else {
+                    used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
+                  }
+                } else {
+                  for (p in 1:length(EAVtables[[dom]])) {
+                    if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
+                    }
+                  }
+                }
+              } else {
+                if (df2 %not in% dataset[[dom]]) {
+                  for (p in 1:length(EAVtables[[dom]])) {
+                    if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
+                      used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
+                    }
+                  }
+                } else {
+                  used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
+                }
+              }
+            }
+          }
+        }
+
+        temp_df <- copy(used_df)
+
+        print(identical(used_df, temp_df))
       }
     }
   }

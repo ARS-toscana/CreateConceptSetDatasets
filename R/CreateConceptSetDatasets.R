@@ -176,17 +176,21 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
               temp_df = copy(used_df)
 
               #1111111111111111111111111111
-
+              # dom = "Medicines"
+              # df2 = "MEDICINES_2013_SPF"
+              # concept = "INSULIN"
               if (df2 %in% dataset[[dom]]) {################### IF I GIVE VOCABULARY IN INPUT
-                if (exists("vocabulary")) {
+                is_wildcard = type_cod %in% vocabularies_with_dot_wildcard
+                if (is_wildcard) {
                   vocab_dom_df2_eq_type_cod <- vocabulary[[dom]][[df2]] == type_cod
                 } else {
                   vocab_dom_df2_eq_type_cod <- T
                 }
                 pattern_base <- paste0("^", codes_rev)
-                if (dom %in% names(vocabulary) &
+                if (exists("vocabulary") &
+                    dom %in% names(vocabulary) &
                     exists("vocabularies_with_dot_wildcard") &
-                    type_cod %in% vocabularies_with_dot_wildcard) {
+                    is_wildcard) {
                   used_df[str_detect(get(col), paste(pattern_base, collapse = "|")) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
                 } else {
                   pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")

@@ -217,14 +217,12 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
               cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
             }
             for (type_cod_2 in cod_system_indataset_excl) {
-
               is_wildcard = try(type_cod_2 %in% vocabularies_with_dot_wildcard, silent=TRUE)
               if (class(is_wildcard) != "try-error" & is_wildcard) {
                 vocab_dom_df2_eq_type_cod <- vocabulary[[dom]][[df2]] == type_cod
               } else {
                 vocab_dom_df2_eq_type_cod <- T
               }
-
               codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
               if (exists("vocabulary") & df2 %in% dataset[[dom]] & dom %in% names(vocabulary) &
                   exists("vocabularies_with_dot_wildcard") & is_wildcard) {
@@ -233,7 +231,6 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & vocab_dom_df2_eq_type_cod, Filter := 0]
               }
             }
-          }
           # 222222222222222222222222222222222
           #if we have codes to exclude
           if (!missing(concept_set_codes_excl)){

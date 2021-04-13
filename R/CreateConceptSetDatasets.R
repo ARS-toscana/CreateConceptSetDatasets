@@ -223,12 +223,15 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
               } else {
                 vocab_dom_df2_eq_type_cod <- T
               }
+              pattern_base <- paste0("^", codes_rev)
               codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
               if (exists("vocabulary") & df2 %in% dataset[[dom]] & dom %in% names(vocabulary) &
                   exists("vocabularies_with_dot_wildcard") & is_wildcard) {
-                used_df[(str_detect(get(col), paste(paste0("^", codes_rev), collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
+                used_df[(str_detect(get(col), paste(pattern_base, collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
               } else {
-                used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & vocab_dom_df2_eq_type_cod, Filter := 0]
+                pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
+                pattern <- gsub("\\*", ".", pattern_no_dot)
+                used_df[(str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
               }
             }
           # 222222222222222222222222222222222

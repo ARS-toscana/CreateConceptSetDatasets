@@ -96,10 +96,11 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       path = paste0(dirinput,"/",df2,".",extension)
       if (extension == "dta") {used_df <- as.data.table(haven::read_dta(path))
       } else if (extension == "csv") {
-        #NOTE why this option??
-        options(readr.num_columns = 0)
         used_df <- fread(path)
-      } else if (extension == "RData") {assign('used_df', get(load(path)))}
+      } else if (extension == "RData") {assign('used_df', get(load(path)))
+      } else {
+
+        }
       # TODO add else
 
       if (exists("dateformat")){
@@ -175,13 +176,9 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
 
               temp_df = copy(used_df)
 
-              #1111111111111111111111111111
-              # dom = "Medicines"
-              # df2 = "MEDICINES_2013_SPF"
-              # concept = "INSULIN"
               if (df2 %in% dataset[[dom]]) {################### IF I GIVE VOCABULARY IN INPUT
-                is_wildcard = type_cod %in% vocabularies_with_dot_wildcard
-                if (is_wildcard) {
+                is_wildcard = try(type_cod %in% vocabularies_with_dot_wildcard, silent=TRUE)
+                if (class(is_wildcard) != "try-error" & is_wildcard) {
                   vocab_dom_df2_eq_type_cod <- vocabulary[[dom]][[df2]] == type_cod
                 } else {
                   vocab_dom_df2_eq_type_cod <- T
@@ -205,46 +202,78 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                   }
                 }
               }
+            }
+          }
 
-              # 2222222222222222222222222222222
+          temp_df = copy(used_df)
 
-              if ((!missing(vocabulary))) {################### IF I GIVE VOCABULARY IN INPUT
-                if (df2 %in% dataset[[dom]]) {
-                  if (dom %in% names(vocabulary)) {
-                    if (!missing(vocabularies_with_dot_wildcard)) {
-                      if (type_cod %in% vocabularies_with_dot_wildcard) {
-                        temp_df[(str_detect(get(col), paste(paste0("^", codes_rev), collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
-                      } else {
-                        temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
-                      }
-                    } else {
-                      temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
-                    }
-                  } else {
-                    temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
-                  }
+          #11111111111111111111111111111111111111111111111
+          #if we have codes to exclude
+          if (!missing(concept_set_codes_excl)){
+            if (exists("vocabulary") & dom %in% names(vocabulary) & df2 %in% names(vocabulary[[dom]])) {
+              cod_system_indataset1_excl<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
+              cod_system_indataset_excl<-Reduce(intersect, list(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]])))
+            }else{
+              cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
+            }
+            for (type_cod_2 in cod_system_indataset_excl) {
+              codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
+              if (exists("vocabulary") & df2 %in% dataset[[dom]] &
+                  dom %in% names(vocabulary) & exists("vocabularies_with_dot_wildcard")) {
+                if (type_cod_2 %in% vocabularies_with_dot_wildcard) {
+                  used_df[(str_detect(get(col), paste(paste0("^", codes_rev), collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
                 } else {
-                  for (p in 1:length(EAVtables[[dom]])) {
-                    if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
-                      temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
-                    }
-                  }
+                  used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
                 }
               } else {
-                if (df2 %not in% dataset[[dom]]) {
-                  for (p in 1:length(EAVtables[[dom]])) {
-                    if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
-                      temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtables[[dom]][[p]][[1]][[2]]), get(EAVtables[[dom]][[p]][[1]][[3]]))))]
-                    }
-                  }
-                } else {
-                  temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, col)]
-                }
+                used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), Filter := 0]
               }
             }
           }
-        }
+          # 222222222222222222222222222222222
+          #if we have codes to exclude
+          if (!missing(concept_set_codes_excl)){
+            if ((!missing(vocabulary))) {
+              if (dom %in% names(vocabulary)) {
+                if (df2 %in% names(vocabulary[[dom]])) {
+                  cod_system_indataset1_excl<-unique(temp_df[,get(vocabulary[[dom]][[df2]])])
+                  cod_system_indataset_excl<-Reduce(intersect, list(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]])))
 
+                }else{
+                  cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
+                }
+              }else{
+                cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
+              }
+            }else{
+              cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
+            }
+            for (type_cod_2 in cod_system_indataset_excl) {
+              codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
+              if ((!missing(vocabulary))) {
+                if (df2 %in% dataset[[dom]]) {
+                  if (dom %in% names(vocabulary)) {
+                    if (!missing(vocabularies_with_dot_wildcard)) {
+                      if (type_cod_2 %in% vocabularies_with_dot_wildcard) {
+                        temp_df[(str_detect(get(col), paste(paste0("^", codes_rev), collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
+                      } else {
+                        temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
+                      }
+                    } else {
+                      temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), Filter := 0]
+                    }
+                  } else {
+                    temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), Filter := 0]
+                  }
+                } else {
+                  temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), Filter := 0]
+                }
+              } else {
+                temp_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), Filter := 0]
+              }
+            }
+          }
+          }
         print(identical(used_df, temp_df))
       }
     }

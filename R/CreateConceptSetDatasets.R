@@ -55,11 +55,11 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
 
   used_domains<-unique(concept_set_domains)
 
-  if (missing(concept_set_names)) {
-    concept_set_names = unique(names(concept_set_domains))
-  } else {
+  if (exists("concept_set_names")) {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
     dataset <- dataset[names(dataset) %in%  used_domains]
+  } else {
+    concept_set_names = unique(names(concept_set_domains))
   }
 
   concept_set_dom <- vector(mode = "list", length = length(used_domains))

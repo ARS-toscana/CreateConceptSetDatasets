@@ -40,16 +40,8 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                                      concept_set_domains,concept_set_codes,concept_set_codes_excl,concept_set_names,vocabulary,
                                      addtabcol=T, verbose=F,discard_from_environment=F,
                                      dirinput,diroutput,extension,vocabularies_with_dot_wildcard) {
-  if (!require("stringr")) install.packages("stringr")
-  library(stringr)
-  if (!require("purrr")) install.packages("purrr") #flatten
-  library(purrr)
-  if (!require("readr")) install.packages("readr")
-  library(readr)
   if (!require("data.table")) install.packages("data.table")
   library(data.table)
-  if (!require("lubridate")) install.packages("lubridate")
-  library(lubridate)
 
   '%not in%' <- Negate(`%in%`)
 
@@ -188,17 +180,17 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                     dom %in% names(vocabulary) &
                     exists("vocabularies_with_dot_wildcard") &
                     is_wildcard) {
-                  used_df[str_detect(get(col), paste(pattern_base, collapse = "|")) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
+                  used_df[stringr::str_detect(get(col), paste(pattern_base, collapse = "|")) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
                 } else {
                   pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
                   pattern <- gsub("\\*", ".", pattern_no_dot)
-                  used_df[str_detect(get(paste0(col, "_tmp")), pattern) & vocab_dom_df2_eq_type_cod,
+                  used_df[stringr::str_detect(get(paste0(col, "_tmp")), pattern) & vocab_dom_df2_eq_type_cod,
                           c("Filter", paste0("Col_", concept)) := list(1, col)]
                 }
               } else {
                 for (EAVtab_dom in EAVtables[[dom]]) {
                   if (df2 %in% EAVtab_dom[[1]][[1]]) {
-                    used_df[(str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtab_dom[[1]][[2]]), get(EAVtab_dom[[1]][[3]]))))]
+                    used_df[(stringr::str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtab_dom[[1]][[2]]), get(EAVtab_dom[[1]][[3]]))))]
                   }
                 }
               }
@@ -222,11 +214,11 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
                 if (exists("vocabulary") & df2 %in% dataset[[dom]] & dom %in% names(vocabulary) &
                     exists("vocabularies_with_dot_wildcard") & is_wildcard) {
-                  used_df[(str_detect(get(col), paste(pattern_base, collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
+                  used_df[(stringr::str_detect(get(col), paste(pattern_base, collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
                 } else {
                   pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
                   pattern <- gsub("\\*", ".", pattern_no_dot)
-                  used_df[(str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
+                  used_df[(stringr::str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
                 }
               }
               used_df[, paste0(col, "_tmp") := NULL]
@@ -269,12 +261,12 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         if (concept %in% concept_set_names) {
           filtered_df_cols = names(filtered_df)
           if (paste0("Filter_",concept) %in% colnames(filtered_df)) {
-            setnames(filtered_df,unique(filtered_df_cols[str_detect(filtered_df_cols, paste0("\\b","Filter_",concept,"\\b"))]),"Filter")
+            setnames(filtered_df,unique(filtered_df_cols[stringr::str_detect(filtered_df_cols, paste0("\\b","Filter_",concept,"\\b"))]),"Filter")
             filtered_concept <- filtered_df[Filter == 1,][,"General":=NULL]
             filtered_concept <- filtered_concept[,!grep("^Filter",names(filtered_concept)),with = F]
             filtered_concept_cols = names(filtered_concept)
             if (paste0("Col_",concept) %in% colnames(filtered_concept)) {
-              setnames(filtered_concept,unique(filtered_concept_cols[str_detect(filtered_concept_cols, paste0("\\b","Col_",concept,"\\b"))]),"Col")
+              setnames(filtered_concept,unique(filtered_concept_cols[stringr::str_detect(filtered_concept_cols, paste0("\\b","Col_",concept,"\\b"))]),"Col")
               filtered_concept <- filtered_concept[,!grep("^Col_",names(filtered_concept)),with = F]
             }
             Newfilter2 <- paste0("Filter_",concept)

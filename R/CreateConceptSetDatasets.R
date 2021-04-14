@@ -81,10 +81,12 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
   #TODO check if EAVtables, EAVattributes and concept_set_names are truly optional. ALmost surely they are not implemented correctly
   #TODO ask about local scope
 
+  real_list = list()
+  temp_list = ()
   for (dom in used_domains) {
 
     dataset1[[dom]] <- dataset[[dom]]
-    if (exists("EAVtables") & exists("EAVattributes") & dom %in% names(EAVtables)) {
+    if (exists("EAVtables") & exists("EAVattributes") & dom %in% names(EAVtables) & length(EAVattributes)!=0) {
       for (EAVtab_dom in EAVtables[[dom]]) {
         dataset1[[dom]] <- append(dataset1[[dom]], EAVtab_dom[[1]][[1]])
       }
@@ -203,12 +205,35 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 }
               }
             }
+
+            if (!missing(concept_set_codes_excl)){
+              if (exists("vocabulary") & dom %in% names(vocabulary) & df2 %in% names(vocabulary[[dom]])) {
+                cod_system_indataset1_excl<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
+                cod_system_indataset_excl<-Reduce(intersect, list(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]])))
+              }else{
+                cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
+              }
+              for (type_cod_2 in cod_system_indataset_excl) {
+                is_wildcard = try(type_cod_2 %in% vocabularies_with_dot_wildcard, silent=TRUE)
+                if (class(is_wildcard) != "try-error" & is_wildcard) {
+                  vocab_dom_df2_eq_type_cod <- vocabulary[[dom]][[df2]] == type_cod
+                } else {
+                  vocab_dom_df2_eq_type_cod <- T
+                }
+                pattern_base <- paste0("^", codes_rev)
+                codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
+                if (exists("vocabulary") & df2 %in% dataset[[dom]] & dom %in% names(vocabulary) &
+                    exists("vocabularies_with_dot_wildcard") & is_wildcard) {
+                  used_df[(str_detect(get(col), paste(pattern_base, collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
+                } else {
+                  pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
+                  pattern <- gsub("\\*", ".", pattern_no_dot)
+                  used_df[(str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
+                }
+              }
+            }
           }
 
-          temp_df = copy(used_df)
-
-          #11111111111111111111111111111111111111111111111
-          #if we have codes to exclude
           if (!missing(concept_set_codes_excl)){
             if (exists("vocabulary") & dom %in% names(vocabulary) & df2 %in% names(vocabulary[[dom]])) {
               cod_system_indataset1_excl<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
@@ -234,8 +259,95 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 used_df[(str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
               }
             }
+
+            used_df[, paste0(col, "_tmp") := NULL]
+          }
+          if ("Filter" %in% colnames(used_df)) {
+            used_df[Filter == 1,General:=1]
+            Newfilter1 <- paste0("Filter_",concept)
+            setnames(used_df,old = "Filter",new = Newfilter1)
+          }
+        }
+      }
+
+      for (col in names(used_df)) {
+        if (col == codvar[[dom]][[df2]]) {
+          setnames(used_df, col, "codvar" )
+        }
+      }
+      if(!missing(rename_col)){
+        ###################RENAME THE COLUMNS ID AND DATE
+        for (elem in names(rename_col)) {
+          data<-eval(parse(text=elem))
+          for (col in names(used_df)) {
+            if (col == data[[dom]][[df2]]) {
+              setnames(used_df, col, elem )
+            }
+          }
+        }
+      }
+
+      #keep only the rows that have matched codes
+      filtered_df <- used_df[General == 1,][,Table_cdm:=df2]
+
+      if (verbose == F) {
+        assign(paste0("FILTERED","_",df2),filtered_df)
+      } else {
+        assign(paste0(dom,"_","FILTERED","_",df2),filtered_df,envir = parent.frame())
+      }
+
+      #split the dataset with respect to the concept set
+      for (concept in concept_set_dom[[dom]]) {
+        if (concept %in% concept_set_names) {
+          filtered_df_cols = names(filtered_df)
+          if (paste0("Filter_",concept) %in% colnames(filtered_df)) {
+            setnames(filtered_df,unique(filtered_df_cols[str_detect(filtered_df_cols, paste0("\\b","Filter_",concept,"\\b"))]),"Filter")
+            filtered_concept <- filtered_df[Filter == 1,][,"General":=NULL]
+            filtered_concept <- filtered_concept[,!grep("^Filter",names(filtered_concept)),with = F]
+            filtered_concept_cols = names(filtered_concept)
+            if (paste0("Col_",concept) %in% colnames(filtered_concept)) {
+              setnames(filtered_concept,unique(filtered_concept_cols[str_detect(filtered_concept_cols, paste0("\\b","Col_",concept,"\\b"))]),"Col")
+              filtered_concept <- filtered_concept[,!grep("^Col_",names(filtered_concept)),with = F]
+            }
+            Newfilter2 <- paste0("Filter_",concept)
+            setnames(filtered_df,old = "Filter",new = Newfilter2)
+          } else {
+            filtered_concept <- used_df[1,!grep("^Filter", names(used_df)),with = F] [,"General":=NULL]
+            filtered_concept[,] <- NA
+            filtered_concept <- filtered_concept[,!grep("^Col", names(filtered_concept)),with = F]
+          }
+
+          if (verbose) {
+            assign(paste0(concept,"_",df2),filtered_concept,envir = parent.frame())
+          }
+        }
+      }
+    }
+
+
+    ###########append all the datasets related to the same concept
+    for (concept in concept_set_dom[[dom]]) {
+      if (concept %in% concept_set_names) {
+        export_df <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
+        for (df2 in dataset1[[dom]]) {
+          if (exists(paste0(concept,"_",df2))){
+            export_df = suppressWarnings( rbind(export_df, eval(parse(text = paste0(concept,"_",df2))),fill = T) )
+          }
+        }
+        export_df<-export_df[, .SD[!all(is.na(.SD))]]
+
+        if (addtabcol == F) export_df<-export_df[,c("Table_cdm","Col"):=NULL]
+        if (discard_from_environment==T) {
+          assign(concept, export_df)
+        }else{ assign(concept, export_df, envir = parent.frame())}
+        save(concept, file = paste0(diroutput,"/",concept,".RData"),list = concept)
+        temp_list <- append(temp_list, concept)
+      }
+    }
+  }
+
           # 222222222222222222222222222222222
-          #if we have codes to exclude
+          # if we have codes to exclude
           if (!missing(concept_set_codes_excl)){
             if ((!missing(vocabulary))) {
               if (dom %in% names(vocabulary)) {
@@ -282,7 +394,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       }
     }
   }
-
+}
   for (dom in used_domains) {
     print(paste("I'm analysing domain", dom))
     for (df2 in dataset1[[dom]]) {

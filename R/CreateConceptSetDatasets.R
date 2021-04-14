@@ -260,9 +260,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       #keep only the rows that have matched codes
       filtered_df <- used_df[General == 1,][,Table_cdm:=df2]
 
-      if (verbose == F) {
-        assign(paste0("FILTERED","_",df2),filtered_df)
-      } else {
+      if (verbose) {
         assign(paste0(dom,"_","FILTERED","_",df2),filtered_df,envir = parent.frame())
       }
 
@@ -289,6 +287,8 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
 
           if (verbose) {
             assign(paste0(concept,"_",df2),filtered_concept,envir = parent.frame())
+          } else {
+            assign(paste0(concept,"_",df2),filtered_concept)
           }
         }
       }

@@ -224,8 +224,8 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                   used_df[(stringr::str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
                 }
               }
-              used_df[, paste0(col, "_tmp") := NULL]
             }
+            used_df[, paste0(col, "_tmp") := NULL]
           }
           if ("Filter" %in% colnames(used_df)) {
             used_df[Filter == 1,General:=1]

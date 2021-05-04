@@ -171,8 +171,6 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 next
               }
 
-              temp_df = copy(used_df)
-
               if (df2 %in% dataset[[dom]]) {################### IF I GIVE VOCABULARY IN INPUT
                 is_wildcard = try(type_cod %in% vocabularies_with_dot_wildcard, silent=TRUE)
                 if (class(is_wildcard) != "try-error" && is_wildcard) {

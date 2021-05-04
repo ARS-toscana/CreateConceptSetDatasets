@@ -213,8 +213,8 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 } else {
                   vocab_dom_df2_eq_type_cod <- T
                 }
-                pattern_base <- paste0("^", codes_rev)
                 codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
+                pattern_base <- paste0("^", codes_rev)
                 if (!missing(vocabulary) && df2 %in% dataset[[dom]] && dom %in% names(vocabulary) &&
                     !missing(vocabularies_with_dot_wildcard) && is_wildcard) {
                   used_df[(stringr::str_detect(get(col), paste(pattern_base, collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]

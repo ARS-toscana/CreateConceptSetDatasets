@@ -55,7 +55,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
 
   used_domains<-unique(concept_set_domains)
 
-  if (exists("concept_set_names")) {
+  if (!missing(concept_set_names)) {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
     dataset <- dataset[names(dataset) %in%  used_domains]
   } else {
@@ -76,7 +76,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
   for (dom in used_domains) {
 
     dataset1[[dom]] <- dataset[[dom]]
-    if (exists("EAVtables") && exists("EAVattributes") && dom %in% names(EAVtables) && length(EAVattributes)!=0) {
+    if (!missing(EAVtables) && !missing(EAVattributes) && dom %in% names(EAVtables) && length(EAVattributes)!=0) {
       for (EAVtab_dom in EAVtables[[dom]]) {
         dataset1[[dom]] <- append(dataset1[[dom]], EAVtab_dom[[1]][[1]])
       }
@@ -95,7 +95,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       }
       # TODO add else
 
-      if (exists("dateformat")){
+      if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
           first_char <- substring(dateformat, 1,1)
           if (stringr::str_count(dateformat, "m") == 3 || stringr::str_count(dateformat, "M") == 3) {
@@ -119,7 +119,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         conc_dom <- concept_set_domains[[concept]]
         if (concept %in% concept_set_names) {
           print(paste("concept set", concept))
-          if (exists("EAVtables")) {
+          if (!missing(EAVtables)) {
             for (p in seq_along(EAVtables[[dom]])) {
               if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
                 used_dfAEV<-data.table()
@@ -141,7 +141,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
           }
         }
 
-        if (exists("vocabulary") && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
+        if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
           cod_system_indataset1 <- unique(used_df[,get(vocabulary[[dom]][[df2]])])
           cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
         } else {
@@ -180,8 +180,8 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                   vocab_dom_df2_eq_type_cod <- T
                 }
                 pattern_base <- paste0("^", codes_rev)
-                if (exists("vocabulary") && dom %in% names(vocabulary) &&
-                    exists("vocabularies_with_dot_wildcard") && is_wildcard) {
+                if (!missing(vocabulary) && dom %in% names(vocabulary) &&
+                    !missing(vocabularies_with_dot_wildcard) && is_wildcard) {
                   used_df[stringr::str_detect(get(col), paste(pattern_base, collapse = "|")) && get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, col)]
                 } else {
                   pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
@@ -199,7 +199,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
             }
 
             if (!missing(concept_set_codes_excl)){
-              if (exists("vocabulary") && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
+              if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
                 cod_system_indataset1_excl<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
                 cod_system_indataset_excl<-Reduce(intersect, list(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]])))
               }else{
@@ -214,8 +214,8 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
                 }
                 pattern_base <- paste0("^", codes_rev)
                 codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
-                if (exists("vocabulary") && df2 %in% dataset[[dom]] && dom %in% names(vocabulary) &&
-                    exists("vocabularies_with_dot_wildcard") && is_wildcard) {
+                if (!missing(vocabulary) && df2 %in% dataset[[dom]] && dom %in% names(vocabulary) &&
+                    !missing(vocabularies_with_dot_wildcard) && is_wildcard) {
                   used_df[(stringr::str_detect(get(col), paste(pattern_base, collapse = "|"))) && get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
                 } else {
                   pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
@@ -293,7 +293,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       if (concept %in% concept_set_names) {
         export_df <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
         for (df2 in dataset1[[dom]]) {
-          if (exists(paste0(concept,"_",df2))){
+          if (!missing(get(paste0(concept,"_",df2)))){
             export_df = suppressWarnings( rbind(export_df, eval(parse(text = paste0(concept,"_",df2))),fill = T) )
           }
         }

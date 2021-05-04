@@ -53,14 +53,14 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
     dir.create(file.path( diroutput))
   })
 
-  used_domains<-unique(concept_set_domains)
-
   if (exists("concept_set_names")) {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
-    dataset <- dataset[names(dataset) %in%  used_domains]
+    dataset <- dataset[names(dataset) %in% unique(rlang::flatten_chr(concept_set_domains))]
   } else {
     concept_set_names = unique(names(concept_set_domains))
   }
+
+  used_domains<-unique(concept_set_domains)
 
   concept_set_dom <- vector(mode = "list", length = length(used_domains))
   names(concept_set_dom) = used_domains
@@ -225,11 +225,11 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
               }
               used_df[, paste0(col, "_tmp") := NULL]
             }
-            if ("Filter" %in% colnames(used_df)) {
-              used_df[Filter == 1,General:=1]
-              Newfilter1 <- paste0("Filter_",concept)
-              setnames(used_df,old = "Filter",new = Newfilter1)
-            }
+          }
+          if ("Filter" %in% colnames(used_df)) {
+            used_df[Filter == 1,General:=1]
+            Newfilter1 <- paste0("Filter_",concept)
+            setnames(used_df,old = "Filter",new = Newfilter1)
           }
         }
       }

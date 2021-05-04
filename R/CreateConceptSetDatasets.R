@@ -53,24 +53,15 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
     dir.create(file.path( diroutput))
   })
 
-<<<<<<< HEAD
-  if (exists("concept_set_names")) {
-    concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
-    dataset <- dataset[names(dataset) %in% unique(rlang::flatten_chr(concept_set_domains))]
-=======
   if (!missing(concept_set_names)) {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
-    dataset<-dataset[names(dataset) %in%  unique(flatten_chr(concept_set_domains))]
->>>>>>> 6b231f0c73b481fa19fbda3b953cad763f361d6d
+    dataset <- dataset[names(dataset) %in% unique(rlang::flatten_chr(concept_set_domains))]
   } else {
     concept_set_names = unique(names(concept_set_domains))
   }
 
   used_domains<-unique(concept_set_domains)
-<<<<<<< HEAD
 
-=======
->>>>>>> 6b231f0c73b481fa19fbda3b953cad763f361d6d
   concept_set_dom <- vector(mode = "list", length = length(used_domains))
   names(concept_set_dom) = used_domains
   for (i in seq_along(concept_set_dom)) {

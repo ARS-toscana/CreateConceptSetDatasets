@@ -53,15 +53,14 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
     dir.create(file.path( diroutput))
   })
 
-  used_domains<-unique(concept_set_domains)
-
   if (!missing(concept_set_names)) {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
-    dataset <- dataset[names(dataset) %in%  used_domains]
+    dataset<-dataset[names(dataset) %in%  unique(flatten_chr(concept_set_domains))]
   } else {
     concept_set_names = unique(names(concept_set_domains))
   }
 
+  used_domains<-unique(concept_set_domains)
   concept_set_dom <- vector(mode = "list", length = length(used_domains))
   names(concept_set_dom) = used_domains
   for (i in seq_along(concept_set_dom)) {
@@ -147,7 +146,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         } else {
           cod_system_indataset <- names(concept_set_codes[[concept]])
         }
-
+browser()
         if (length(cod_system_indataset) == 0) {
           used_df[,c("Filter", paste0("Col_", concept)) := list(0, NA)]
         } else {
@@ -225,20 +224,20 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
               }
               used_df[, paste0(col, "_tmp") := NULL]
             }
-            if ("Filter" %in% colnames(used_df)) {
-              used_df[Filter == 1,General:=1]
-              Newfilter1 <- paste0("Filter_",concept)
-              setnames(used_df,old = "Filter",new = Newfilter1)
-            }
+          }
+          if ("Filter" %in% colnames(used_df)) {
+            used_df[Filter == 1,General:=1]
+            Newfilter1 <- paste0("Filter_",concept)
+            setnames(used_df,old = "Filter",new = Newfilter1)
           }
         }
       }
 
-      for (col in names(used_df)) {
-        if (col == codvar[[dom]][[df2]]) {
-          setnames(used_df, col, "codvar" )
-        }
-      }
+      # for (col in names(used_df)) {
+      #   if (col == codvar[[dom]][[df2]]) {
+      #     setnames(used_df, col, "codvar" )
+      #   }
+      # }
       if(!missing(rename_col)){
         ###################RENAME THE COLUMNS ID AND DATE
         for (elem in names(rename_col)) {
@@ -293,7 +292,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
       if (concept %in% concept_set_names) {
         export_df <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
         for (df2 in dataset1[[dom]]) {
-          if (!missing(get(paste0(concept,"_",df2)))){
+          if (exists(paste0(concept,"_",df2))){
             export_df = suppressWarnings( rbind(export_df, eval(parse(text = paste0(concept,"_",df2))),fill = T) )
           }
         }

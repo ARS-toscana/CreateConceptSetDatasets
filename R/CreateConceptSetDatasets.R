@@ -316,6 +316,7 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         #   names(export_df) <- names_empty
         #   export_df[,] <- NA
         # }
+        # These are the column of the last used_df not of the concept so it may not be what we want
         if (sum(dim(export_df)) == 0) {
           export_df <- used_df[0, ][, General := NULL]
         }

@@ -26,4 +26,4 @@ concept_set_codes_our_study[["OTHER_AED"]][["ATC"]]=c("A10B")
 
 
 concept_set_codes_our_study_excl<- vector(mode="list")
-concept_set_codes_our_study_excl[["DIABETES"]][["ICD10"]]=c("E11")
+concept_set_codes_our_study_excl[["DIABETES"]][["ICD9"]]=c("25011", "280")

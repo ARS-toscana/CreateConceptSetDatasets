@@ -304,9 +304,10 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
     for (concept in concept_set_dom[[dom]]) {
       if (concept %in% concept_set_names) {
         export_df <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
-        all_col_names <- character()
+        all_col_df <- data.table()
         for (df2 in dataset1[[dom]]) {
-          all_col_names <- union(all_col_names, names(eval(parse(text = paste0(concept,"_",df2)))))
+          all_col_df <- as.data.table(cbind(all_col_df, eval(parse(text = paste0(concept,"_",df2)))[0, ]))
+          all_col_df <- all_col_df[, .SD, .SDcols = unique(names(all_col_df))]
           if (dim(eval(parse(text = paste0(concept,"_",df2))))[1] != 0 &&
               min(is.na(eval(parse(text = paste0(concept,"_",df2)))), na.rm = T) == 0){
             export_df = suppressWarnings(rbind(export_df, eval(parse(text = paste0(concept,"_",df2))),fill = T) )
@@ -324,11 +325,11 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         #   export_df <- used_df[0, ][, General := NULL]
         # }
 
-        col_to_add <- setdiff(all_col_names, names(export_df))
+        col_to_add <- setdiff(names(all_col_df), names(export_df))
+
         if (length(col_to_add) != 0L) {
-          export_df <- export_df[, (col_to_add) := NA]
+          export_df <- rbind(all_col_df, export_df, fill = T)
         }
-        export_df <- export_df[, .SD[!all(is.na(.SD))]]
 
         if (addtabcol == F) export_df<-export_df[,c("Table_cdm","Col"):=NULL]
         if (discard_from_environment==T) {

@@ -245,11 +245,12 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
         }
       }
 
-      # for (col in names(used_df)) {
-      #   if (col == codvar[[dom]][[df2]]) {
-      #     setnames(used_df, col, "codvar" )
-      #   }
-      # }
+      for (col in names(used_df)) {
+        if (col == codvar[[dom]][[df2]]) {
+          setnames(used_df, col, "codvar" )
+        }
+      }
+
       if(!missing(rename_col)){
         ###################RENAME THE COLUMNS ID AND DATE
         for (elem in names(rename_col)) {
@@ -285,9 +286,9 @@ CreateConceptSetDatasets <- function(dataset,codvar,datevar,EAVtables,EAVattribu
             Newfilter2 <- paste0("Filter_",concept)
             setnames(filtered_df,old = "Filter",new = Newfilter2)
           } else {
-            filtered_concept <- used_df[1,!grep("^Filter", names(used_df)),with = F] [,"General":=NULL]
-            filtered_concept[,] <- NA
-            filtered_concept <- filtered_concept[,!grep("^Col", names(filtered_concept)),with = F]
+            filtered_concept <- used_df[0, ][, !grep("^Filter", names(used_df)), with = F][,"General":=NULL]
+            rbind(filtered_concept[NA], filtered_concept)
+            filtered_concept <- filtered_concept[, !grep("^Col", names(filtered_concept)), with = F]
           }
 
           if (verbose) {

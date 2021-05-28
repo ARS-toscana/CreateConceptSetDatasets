@@ -289,9 +289,7 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
           assign(concept, final_concept, envir = parent.frame())
         }
 
-        browser()
-
-        save(get(concept), file = paste0(diroutput, "/", concept, ".RData"))
+        save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
         rm(final_concept)
       }
     }

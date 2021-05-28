@@ -248,12 +248,6 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           }
         }
 
-        if ("Filter" %in% colnames(used_df)) {
-          filtered_df <- copy(used_df)[Filter == 1, ][, Table_cdm := df2]
-          Filter_concept <- paste0("Filter_", concept)
-          setnames(filtered_df, old = "Filter", new = Filter_concept)
-        }
-
         if (codvar[[dom]][[df2]] %in% names(filtered_df)) {
           setnames(filtered_df, col, "codvar")
         }
@@ -266,6 +260,12 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
               setnames(filtered_df, col, elem)
             }
           }
+        }
+
+        filtered_concept <- copy(used_df)[Filter == 1, ][, Table_cdm := df2]
+        if (paste0("Col_",concept) %in% colnames(filtered_concept)) {
+          setnames(filtered_concept, paste0("Col_",concept), "Col")
+          filtered_concept <- filtered_concept[,!grep("^Col_",names(filtered_concept)),with = F]
         }
 
         filtered_df_cols = names(filtered_df)

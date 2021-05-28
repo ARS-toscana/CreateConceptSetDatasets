@@ -118,8 +118,6 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
         used_df <- used_df[eval(parse(text = filter)), ]
       }
 
-      used_df[, General:=0]
-      used_df0 <- as.data.table(data.frame(matrix(ncol = 0, nrow = 0)))
       #for each dataset search for the codes in all concept sets
       for (concept in concept_set_dom[[dom]]) {
         conc_dom <- concept_set_domains[[concept]]
@@ -241,23 +239,24 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
           }
         }
 
-        filtered_df <- used_df[Filter == 1, ]
+        browser()
 
-        if (codvar[[dom]][[df2]] %in% names(filtered_df)) {
-          setnames(filtered_df, col, "codvar")
+        filtered_concept <- copy(used_df)[Filter == 1, ][, Table_cdm := df2]
+
+        if (codvar[[dom]][[df2]] %in% names(filtered_concept)) {
+          setnames(filtered_concept, col, "codvar")
         }
 
         if(!missing(rename_col)){
           ###################RENAME THE COLUMNS ID AND DATE
           for (elem in names(rename_col)) {
             data<-eval(parse(text=elem))
-            if (data[[dom]][[df2]] %in% names(filtered_df)) {
-              setnames(filtered_df, data[[dom]][[df2]], elem)
+            if (data[[dom]][[df2]] %in% names(filtered_concept)) {
+              setnames(filtered_concept, data[[dom]][[df2]], elem)
             }
           }
         }
 
-        filtered_concept <- copy(used_df)[Filter == 1, ][, Table_cdm := df2]
         if (paste0("Col_",concept) %in% colnames(filtered_concept)) {
           setnames(filtered_concept, paste0("Col_",concept), "Col")
         }

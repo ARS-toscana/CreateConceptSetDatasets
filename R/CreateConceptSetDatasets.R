@@ -283,10 +283,15 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
 
         }
 
-        if (discard_from_environment == F) {
-          assign(concept, final_concept, envir = parent.frame())}
+        if (discard_from_environment == T) {
+          assign(concept, final_concept)
+        } else {
+          assign(concept, final_concept, envir = parent.frame())
+        }
 
-        save(final_concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
+        browser()
+
+        save(get(concept), file = paste0(diroutput, "/", concept, ".RData"))
         rm(final_concept)
       }
     }

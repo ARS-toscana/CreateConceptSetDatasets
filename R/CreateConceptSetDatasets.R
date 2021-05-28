@@ -63,6 +63,12 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
     concept_set_names = unique(names(concept_set_domains))
   }
 
+  for (concept in concept_set_names) {   #Delete file if it exists   file.remove(fn) }) {
+    if (file.exists(paste0(diroutput, "/", concept,".RData"))) {
+      file.remove(paste0(diroutput, "/", concept,".RData"))
+    }
+  }
+
   used_domains <- unique(concept_set_domains)
 
   concept_set_dom <- vector(mode = "list", length = length(used_domains))
@@ -152,7 +158,7 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
         }
 
         if (length(cod_system_indataset) == 0) {
-          used_df <- used_df[, Filter := 0, ]
+          used_df <- used_df[, c("Col", "Filter") := 0, ]
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
             used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
@@ -239,9 +245,12 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
           }
         }
 
-        browser()
+        if (paste0("Col_",concept) %in% colnames(used_df)) {
+          setnames(used_df, paste0("Col_",concept), "Col")
+        }
 
-        filtered_concept <- copy(used_df)[Filter == 1, ][, Table_cdm := df2]
+        filtered_concept <- copy(used_df)[Filter == 1, ][, Filter := NULL][, Table_cdm := df2]
+        used_df <- used_df[, c("Col", "Filter") := NULL]
 
         if (codvar[[dom]][[df2]] %in% names(filtered_concept)) {
           setnames(filtered_concept, col, "codvar")
@@ -257,20 +266,22 @@ CreateConceptSetDatasetsV17 <- function(dataset, codvar, datevar, EAVtables, EAV
           }
         }
 
-        if (paste0("Col_",concept) %in% colnames(filtered_concept)) {
-          setnames(filtered_concept, paste0("Col_",concept), "Col")
-        }
-
-        setnames(filtered_concept, old = "Filter", new = paste0("Filter_",concept))
-
         if (addtabcol == F) filtered_concept <- filtered_concept[,c("Table_cdm","Col"):=NULL]
 
-        load(file = paste0(diroutput, "/", concept,".RData"))
-        final_concept <- get(concept)
-        rm(list = concept)
+        if (file.exists(paste0(diroutput, "/", concept,".RData"))) {
 
-        final_concept <- rbindlist(list(final_concept, filtered_concept), fill = T)
-        rm(filtered_concept)
+          load(file = paste0(diroutput, "/", concept,".RData"))
+          final_concept <- get(concept)
+          rm(list = concept)
+
+          final_concept <- rbindlist(list(final_concept, filtered_concept), fill = T)
+          rm(filtered_concept)
+
+        } else {
+
+          final_concept <- filtered_concept
+
+        }
 
         if (discard_from_environment == F) {
           assign(concept, final_concept, envir = parent.frame())}

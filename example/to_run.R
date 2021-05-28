@@ -13,7 +13,7 @@ source(paste0(thisdir,"/p_parameters/concept_sets.R"))
 
 
 
-CreateConceptSetDatasetsV17(concept_set_names = concept_sets_of_our_study,
+CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          dataset = Example_CDM_tables,
                          codvar = Example_CDM_codvar,
                          datevar= Example_CDM_datevar,

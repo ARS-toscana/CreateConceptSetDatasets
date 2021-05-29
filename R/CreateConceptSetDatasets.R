@@ -253,7 +253,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           used_df <- used_df[, Filter := NULL]
         } else {
           setnames(used_df, col_concept, "Col")
-          filtered_concept <- copy(used_df)[Filter == 1, ][, Filter := NULL][, Table_cdm := df2]
+          filtered_concept <- copy(used_df)[Filter == 1, ][, c("Filter", "Table_cdm") := list(NULL, df2)]
           used_df <- used_df[, c("Filter", "Col") := NULL]
         }
 
@@ -271,46 +271,42 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           }
         }
 
-        if (file.exists(paste0(diroutput, "/", concept,".RData"))) {
-          load(file = paste0(diroutput, "/", concept, ".RData"))
-          final_concept <- get(concept)
-          rm(list = concept)
+        name_export_df <- paste0(concept, "_", df2, "_", dom)
 
-          final_concept <- rbindlist(list(final_concept, filtered_concept), fill = T)
-          rm(filtered_concept)
-        } else {
-          final_concept <- filtered_concept
-        }
+        assign(name_export_df, filtered_concept)
+        save(name_export_df,
+             file = paste0(diroutput, "/", concept, "_", df2, "_", dom, ".RData"),
+             list = name_export_df)
 
-        if (discard_from_environment == T) {
-          assign(concept, filtered_concept)
-        } else {
-          assign(concept, filtered_concept, envir = parent.frame())
-        }
-
-        save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
-        rm(filtered_concept, concept)
+        objects_to_remove <- c(name_export_df, "filtered_concept")
+        rm(list = objects_to_remove)
       }
+      rm(used_df)
     }
   }
 
-  final_concept <- data.table()
-  all_files <-
-  str_detect(list.files(diroutput), "I")
-  for (single_file in list.files(diroutput)) {
-    if (str_detect(single_file, "^OBSERVATION_PERIODS")) {
-      temp <- fread(paste0(dirinput,files[i],".csv"), colClasses = list( character="person_id"))
-      OBSERVATION_PERIODS <- rbind(OBSERVATION_PERIODS, temp,fill=T)
-      rm(temp)
+  all_files <- str_match(list.files(diroutput), ".+?(?=\\.)")
+  for (concept in concept_set_names) {
+
+    print(paste("Merging and saving the concept", concept))
+    final_concept <- data.table()
+
+    for (single_file in all_files[str_detect(all_files, concept)]) {
+      load(file = paste0(diroutput, "/", single_file, ".RData"))
+      final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
+      file.remove(paste0(diroutput, "/", single_file, ".RData"))
+      objects_to_remove <- c(single_file)
+      rm(list = objects_to_remove)
     }
-  }
 
-  for (concept in concept_set_names) {   #Delete file if it exists   file.remove(fn) }) {
-    if (file.exists(paste0(diroutput, "/", concept,".RData"))) {
-      file.remove(paste0(diroutput, "/", concept,".RData"))
+    if (discard_from_environment) {
+      assign(concept, final_concept)
+    } else {
+      assign(concept, final_concept, envir = parent.frame())
     }
+
+    save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
+    rm(concept, final_concept)
   }
-
-
   print(paste("Concept set datasets saved in",diroutput))
 }

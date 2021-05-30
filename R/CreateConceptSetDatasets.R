@@ -42,25 +42,18 @@
 #'#'CHECK VOCABULARY
 CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVattributes, dateformat, rename_col,
                                      concept_set_domains, concept_set_codes, concept_set_codes_excl, concept_set_names,
-                                     vocabulary, filter=NULL, addtabcol=T, verbose=F, discard_from_environment=F,
-                                     dirinput, diroutput, extension, vocabularies_with_dot_wildcard,
+                                     vocabulary, filter = NULL, addtabcol = T, verbose = F, discard_from_environment = F,
+                                     dirinput = getwd(), diroutput = getwd(), extension, vocabularies_with_dot_wildcard,
                                      vocabularies_with_keep_dot) {
 
-  # '%not in%' <- Negate(`%in%`)
-
-  if (missing(diroutput)) diroutput<-getwd()
-  if (missing(dirinput)) dirinput<-getwd()
   #Check that output folder exist otherwise create it
+  dir.create(file.path(diroutput), showWarnings = FALSE)
 
-  suppressWarnings( if (!(file.exists(diroutput))){
-    dir.create(file.path( diroutput))
-  })
-
-  if (!missing(concept_set_names)) {
+  if (missing(concept_set_names)) {
+    concept_set_names = unique(names(concept_set_domains))
+  } else {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
     dataset <- dataset[names(dataset) %in% unique(rlang::flatten_chr(concept_set_domains))]
-  } else {
-    concept_set_names = unique(names(concept_set_domains))
   }
 
   for (concept in concept_set_names) {   #Delete file if it exists   file.remove(fn) }) {

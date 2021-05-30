@@ -124,6 +124,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   }
                 }
               }
+
+              # NOTE correct place and method for assignment?
+
               used_df <- used_dfAEV
             }
           }
@@ -141,45 +144,42 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
             used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
+
             for (type_cod in cod_system_indataset) {
-              stop = FALSE
               codes_rev <- concept_set_codes[[concept]][[type_cod]]
-              for (single_cod in codes_rev) {
-                if (single_cod == "ALL_CODES") {
-                  print("allcodes")
-                  used_df[, Filter:=1]
-                  # NOTE codvar[[dom]][[df2]][1] == col, or not?
-                  used_df[, .(col_concept) := codvar[[dom]][[df2]][1]]
-                  stop = TRUE
-                  break
-                }
-              }
-              if (stop == TRUE) {
+
+              lower_codes_rev <- tolower(as.character(codes_rev))
+              all_codes_str <- c("all", "all codes", "all_codes")
+              if (any(all_codes_str %in% lower_codes_rev)) {
+                print(paste("Using all codes for concept", concept))
+                used_df[, Filter:=1]
+                # NOTE next or break? all codes is for all type of codes or just one?
+                used_df[, .(col_concept) := codvar[[dom]][[df2]][1]]
                 next
               }
 
               if (df2 %in% dataset[[dom]]) {################### IF I GIVE VOCABULARY IN INPUT
-                is_wildcard = try(type_cod %in% vocabularies_with_dot_wildcard, silent=TRUE)
-                is_keep_dot = try(type_cod %in% vocabularies_with_keep_dot, silent=TRUE)
-                if ((class(is_wildcard) != "try-error" && is_wildcard) || (class(is_keep_dot) != "try-error" && is_keep_dot)) {
-                  vocab_dom_df2_eq_type_cod <- vocabulary[[dom]][[df2]] == type_cod
-                } else {
-                  vocab_dom_df2_eq_type_cod <- T
-                }
                 pattern_base <- paste0("^", codes_rev)
-                if (!missing(vocabulary) && dom %in% names(vocabulary) &&
-                    !missing(vocabularies_with_dot_wildcard) && is_wildcard) {
-                  used_df[stringr::str_detect(get(col), paste(pattern_base, collapse = "|")) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", col_concept) := list(1, col)]
-                } else if (!missing(vocabulary) && dom %in% names(vocabulary) &&
-                           !missing(vocabularies_with_keep_dot) && is_keep_dot){
-                  pattern_with_dot <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
-                  used_df[stringr::str_detect(get(col), pattern_with_dot) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", col_concept) := list(1, col)]
-                } else {
-                  pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
-                  pattern <- gsub("\\*", ".", pattern_no_dot)
-                  used_df[stringr::str_detect(get(paste0(col, "_tmp")), pattern) & vocab_dom_df2_eq_type_cod,
-                          c("Filter", col_concept) := list(1, col)]
+                pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
+                pattern <- gsub("\\*", ".", pattern_no_dot)
+                column_to_search <- paste0(col, "_tmp")
+
+                if (!missing(vocabulary) && dom %in% names(vocabulary)) {
+                  if (get(vocabulary[[dom]][[df2]]) == type_cod) {
+                    if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
+                      pattern <- paste(pattern_base, collapse = "|")
+                      column_to_search <- col
+                    } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
+                      pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
+                      column_to_search <- col
+                    }
+                  } else {
+                    next
+                  }
                 }
+
+                used_df[stringr::str_detect(get(column_to_search), pattern), c("Filter", col_concept) := list(1, col)]
+
               } else {
                 for (EAVtab_dom in EAVtables[[dom]]) {
                   if (df2 %in% EAVtab_dom[[1]][[1]]) {
@@ -197,27 +197,28 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
               }
               for (type_cod_2 in cod_system_indataset_excl) {
-                is_wildcard = try(type_cod_2 %in% vocabularies_with_dot_wildcard, silent=TRUE)
-                is_keep_dot = try(type_cod_2 %in% vocabularies_with_keep_dot, silent=TRUE)
-                if ((class(is_wildcard) != "try-error" && is_wildcard) || (class(is_keep_dot) != "try-error" && is_keep_dot)) {
-                  vocab_dom_df2_eq_type_cod <- vocabulary[[dom]][[df2]] == type_cod
-                } else {
-                  vocab_dom_df2_eq_type_cod <- T
-                }
                 codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
                 pattern_base <- paste0("^", codes_rev)
-                if (!missing(vocabulary) && df2 %in% dataset[[dom]] && dom %in% names(vocabulary) &&
-                    !missing(vocabularies_with_dot_wildcard) && is_wildcard) {
-                  used_df[(stringr::str_detect(get(col), paste(pattern_base, collapse = "|"))) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
-                } else if (!missing(vocabulary) && df2 %in% dataset[[dom]] && dom %in% names(vocabulary) &&
-                           !missing(vocabularies_with_keep_dot) && is_keep_dot){
-                  pattern_with_dot <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
-                  used_df[stringr::str_detect(get(col), pattern_with_dot) & get(vocabulary[[dom]][[df2]]) == type_cod_2, Filter := 0]
-                } else {
-                  pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
-                  pattern <- gsub("\\*", ".", pattern_no_dot)
-                  used_df[(stringr::str_detect(get(paste0(col, "_tmp")), pattern)) & vocab_dom_df2_eq_type_cod, Filter := 0]
+                pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
+                pattern <- gsub("\\*", ".", pattern_no_dot)
+                column_to_search <- paste0(col, "_tmp")
+
+                if (!missing(vocabulary) && dom %in% names(vocabulary)) {
+                  if (get(vocabulary[[dom]][[df2]]) == type_cod) {
+                    if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
+                      pattern <- paste(pattern_base, collapse = "|")
+                      column_to_search <- col
+                    } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
+                      pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
+                      column_to_search <- col
+                    }
+                  } else {
+                    next
+                  }
                 }
+
+                used_df[stringr::str_detect(get(column_to_search), pattern), c("Filter", col_concept) := list(1, col)]
+
               }
             }
             used_df[, paste0(col, "_tmp") := NULL]

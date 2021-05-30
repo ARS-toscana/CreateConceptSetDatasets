@@ -53,49 +53,33 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     concept_set_names = unique(names(concept_set_domains))
   } else {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
-    dataset <- dataset[names(dataset) %in% unique(rlang::flatten_chr(concept_set_domains))]
-  }
-
-  for (concept in concept_set_names) {   #Delete file if it exists   file.remove(fn) }) {
-    if (file.exists(paste0(diroutput, "/", concept,".RData"))) {
-      file.remove(paste0(diroutput, "/", concept,".RData"))
-    }
+    dataset <- dataset[names(dataset) %in% unique(concept_set_domains)]
   }
 
   used_domains <- unique(concept_set_domains)
 
-  concept_set_dom <- vector(mode = "list", length = length(used_domains))
-  names(concept_set_dom) = used_domains
-  for (i in seq_along(concept_set_dom)) {
-    concept_set_dom[[i]] <- names(concept_set_domains)[names(concept_set_dom[i]) == concept_set_domains]
-  }
+  concept_set_dom <- split(names(concept_set_domains), unlist(concept_set_domains))
 
-  dataset1 <- vector("list", length(used_domains))
-
-  #TODO check if EAVtables, EAVattributes and concept_set_names are truly optional. Almost surely they are not implemented correctly
-  #TODO ask about local scope
+  partial_concepts <- vector(mode = "list")
 
   for (dom in used_domains) {
 
-    dataset1[[dom]] <- dataset[[dom]]
+    dataset_in_dom <- dataset[[dom]]
     if (!missing(EAVtables) && !missing(EAVattributes) && dom %in% names(EAVtables) && length(EAVattributes)!=0) {
       for (EAVtab_dom in EAVtables[[dom]]) {
-        dataset1[[dom]] <- append(dataset1[[dom]], EAVtab_dom[[1]][[1]])
+        dataset_in_dom <- append(dataset_in_dom, EAVtab_dom[[1]][[1]])
       }
     }
 
     print(paste("I'm analysing domain", dom))
-    for (df2 in dataset1[[dom]]) {
+
+    for (df2 in dataset_in_dom) {
       print(paste0("I'm analysing table ", df2, " [for domain ", dom, "]"))
-      path = paste0(dirinput,"/",df2,".",extension)
+      path = paste0(dirinput, "/", df2, ".", extension)
       if (extension == "dta") {used_df <- as.data.table(haven::read_dta(path))
-      } else if (extension == "csv") {
-        used_df <- fread(path)
+      } else if (extension == "csv") {used_df <- fread(path)
       } else if (extension == "RData") {assign('used_df', get(load(path)))
-      } else {
-        stop("File extension not recognized. Please use a supported file")
-      }
-      # TODO add else
+      } else {stop("File extension not recognized. Please use a supported file")}
 
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
@@ -267,6 +251,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         name_export_df <- paste0(concept, "_", df2, "_", dom)
 
         assign(name_export_df, filtered_concept)
+        partial_concepts <- append(partial_concepts, name_export_df)
         save(name_export_df,
              file = paste0(diroutput, "/", concept, "_", df2, "_", dom, ".RData"),
              list = name_export_df)
@@ -278,13 +263,12 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     }
   }
 
-  all_files <- str_match(list.files(diroutput), ".+?(?=\\.)")
   for (concept in concept_set_names) {
 
     print(paste("Merging and saving the concept", concept))
     final_concept <- data.table()
 
-    for (single_file in all_files[str_detect(all_files, concept)]) {
+    for (single_file in partial_concepts[str_detect(partial_concepts, concept)]) {
       load(file = paste0(diroutput, "/", single_file, ".RData"))
       final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
       file.remove(paste0(diroutput, "/", single_file, ".RData"))

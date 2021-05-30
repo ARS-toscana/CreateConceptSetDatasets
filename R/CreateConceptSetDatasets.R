@@ -83,15 +83,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
+
           first_char <- substring(dateformat, 1,1)
           if (stringr::str_count(dateformat, "m") == 3 || stringr::str_count(dateformat, "M") == 3) {
             used_df <- used_df[, (datevar_dom_df2) := as.Date(get(datevar_dom_df2),"%d%b%Y")]
-            # used_df[,datevar_dom_df2] <- as.Date(used_df[,get(datevar_dom_df2)],"%d%b%Y")
           } else if (first_char %in% c("Y", "y")) {
             used_df <- used_df[, (datevar_dom_df2) := lubridate::ymd(get(datevar_dom_df2))]
-            # used_df[,datevar_dom_df2] <- lubridate::ymd(used_df[,get(datevar_dom_df2)])
           } else if (first_char %in% c("D", "d")) {
-            # used_df[,datevar_dom_df2] <- lubridate::dmy(used_df[,get(datevar_dom_df2)])
             used_df <- used_df[, (datevar_dom_df2) := lubridate::dmy(get(datevar_dom_df2))]
           }
         }
@@ -163,22 +161,22 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
                 pattern <- gsub("\\*", ".", pattern_no_dot)
                 column_to_search <- paste0(col, "_tmp")
+                vocab_dom_df2_eq_type_cod <- TRUE
 
                 if (!missing(vocabulary) && dom %in% names(vocabulary)) {
-                  if (get(vocabulary[[dom]][[df2]]) == type_cod) {
-                    if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
-                      pattern <- paste(pattern_base, collapse = "|")
-                      column_to_search <- col
-                    } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
-                      pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
-                      column_to_search <- col
-                    }
-                  } else {
-                    next
+                  if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
+                    pattern <- paste(pattern_base, collapse = "|")
+                    column_to_search <- col
+                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
+                  } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
+                    pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
+                    column_to_search <- col
+                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                   }
                 }
 
-                used_df[stringr::str_detect(get(column_to_search), pattern), c("Filter", col_concept) := list(1, col)]
+                used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern),
+                        c("Filter", col_concept) := list(1, col)]
 
               } else {
                 for (EAVtab_dom in EAVtables[[dom]]) {
@@ -202,22 +200,21 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
                 pattern <- gsub("\\*", ".", pattern_no_dot)
                 column_to_search <- paste0(col, "_tmp")
+                vocab_dom_df2_eq_type_cod <- TRUE
 
                 if (!missing(vocabulary) && dom %in% names(vocabulary)) {
-                  if (get(vocabulary[[dom]][[df2]]) == type_cod) {
-                    if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
-                      pattern <- paste(pattern_base, collapse = "|")
-                      column_to_search <- col
-                    } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
-                      pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
-                      column_to_search <- col
-                    }
-                  } else {
-                    next
+                  if (!missing(vocabularies_with_dot_wildcard) && type_cod_2 %in% vocabularies_with_dot_wildcard) {
+                    pattern <- paste(pattern_base, collapse = "|")
+                    column_to_search <- col
+                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
+                  } else if (!missing(vocabularies_with_keep_dot) && type_cod_2 %in% vocabularies_with_keep_dot) {
+                    pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
+                    column_to_search <- col
+                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
                   }
                 }
 
-                used_df[stringr::str_detect(get(column_to_search), pattern), c("Filter", col_concept) := list(1, col)]
+                used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern), Filter := 0]
 
               }
             }

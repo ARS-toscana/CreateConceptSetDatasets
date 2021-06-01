@@ -49,11 +49,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
   #Check that output folder exist otherwise create it
   dir.create(file.path(diroutput), showWarnings = FALSE)
 
-  if (extension == F) {
-    extension_flag = T
-  } else {
-    extension_flag = F
-  }
+  if (extension == F) {extension_flag = T} else {extension_flag = F}
 
   if (missing(concept_set_names)) {
     concept_set_names = unique(names(concept_set_domains))
@@ -83,7 +79,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       print(paste0("I'm analysing table ", df2, " [for domain ", dom, "]"))
       if (extension_flag) {
         files <- list.files(dirinput)
-        file_name <- files[stringr::str_detect(files, df2)]
+        file_name <- files[stringr::str_detect(files, df2)][[1]]
         extension <- paste0(stringr::str_extract(file_name, "(?<=\\.).*"))
       } else {
         file_name <- paste0(df2, ".", extension)
@@ -108,7 +104,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
       }
 
-      if (!missing(filter_expression[[dom]])) {
+      if (!missing(filter_expression) && !is.null(filter_expression[[dom]])) {
         used_df <- used_df[eval(parse(text = filter_expression[[dom]])), ]
       }
 

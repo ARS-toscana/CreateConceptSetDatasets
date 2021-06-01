@@ -4,33 +4,33 @@
 #'
 #'
 #' @param dataset a 2-level list containing, for each domain, the names of the corresponding input tables of data
-#' @param 	codvar a 3-level list containing, for each input table of data and each domain, the name(s) of the column(s) containing the codes of interest
-#' @param 	datevar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing dates (only if extension=”csv”), to be saved as dates in the output
+#' @param codvar a 3-level list containing, for each input table of data and each domain, the name(s) of the column(s) containing the codes of interest
+#' @param datevar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing dates (only if extension=”csv”), to be saved as dates in the output
 #' @param numericvar (optional): a 2-level list containing, for each input table of data, the name(s) of the column(s) containing numbers (only if extension=”csv”), to be saved as a number in the output
 #' @param EAVtables (optional): a 2-level list specifying, for each domain, tables in a Entity-Attribute-Value structure; each table is listed with the name of two columns: the one contaning attributes and the one containing values
 #' @param EAVattributes (optional): a 3-level list specifying, for each domain and table in a Entity-Attribute-Value structure, the attributes whose values should be browsed to retrieve codes belonging to that domain; each attribute is listed along with its coding system
 #' @param dateformat (optional): a string containing the format of the dates in the input tables of data (only if -datevar- is indicated); the string must be in one of the following:
 # YYYYDDMM...
 #' @param rename_col (optional) this is a list of 3-level lists; each 3-level list contains a column name for each input table of data (associated to a data domain) to be renamed in the output (for instance: the personal identifier, or the date); in the output all the columns will be renamed with the name of the list.
+#' @param filter_expression (optional) this is a 2-level lists: this is a logical condition in the columns that are specified in -rename_col-. This conditions is to be used to filter the input datasets before starting to filter the concept sets
 #' @param concept_set_domains a 2-level list containing, for each concept set, the corresponding domain
 #' @param concept_set_codes a 3-level list containing, for each concept set, for each coding system, the list of the corresponding codes to be used as inclusion criteria for records: records must be included if the their code(s) starts with at least one string in this list; the match is executed ignoring points
 #' @param concept_set_codes_excl (optional) a 3-level list containing, for each concept set, for each coding system, the list of the corresponding codes to be used as exclusion criteria for records: records must be excluded if the their code(s) starts with at least one string in this list; the match is executed ignoring points
 #' @param concept_set_names (optional) a vector containing the names of the concept sets to be processed; if this is missing, all the concept sets included in the previous lists are processed
 #' @param vocabulary (optional) a 3-level list containing, for each table of data and data domain, the name of the column containing the vocabulary of the column(s) -codvar-
-#' @param filter (optional) a list containing the filters that are needed to be applied just after the importing of the datasets
 #' @param addtabcol a logical parameter, by default set to TRUE: if so, the columns "Table_cdm" and "Col" are added to the output, indicating respectively from which original table and column the code is taken.
 #' @param verbose a logical parameter, by default set to FALSE. If it is TRUE additional intermediate output datasets will be shown in the R environment
 #' @param discard_from_environment (optional) a logical parameter, by default set to FALSE. If it is TRUE, the output datasets are removed from the global environment
 #' @param dirinput (optional) the directory where the input tables of data are stored. If not provided the working directory is considered.
 #' @param diroutput (optional) the directory where the output concept sets datasets will be saved. If not provided the working directory is considered.
-#' @param extension the extension of the input tables of data (csv and dta are supported)
+#' @param extension (optional) the extension of the input tables of data (csv and dta are supported)
 #' @param vocabularies_with_dot_wildcard a list containing the vocabularies in which treat the character dot in codes as wildcard
 #' @param vocabularies_with_keep_dot a list containing the vocabularies in which treat the character dot in codes as itself
 
 #'
 #' @details
 #'
-#' A concept set is a set of medical concepts (eg the concept set "DIABETES" may contain the concepts "type 2 diabets" and "type 1 diabetes") that may be recorded in the tables of data in some coding systems (for instance, "ICD10", or "ATC"). Each concept set is associated to a data domain (eg "diagnosis" or "medication") which is the topic of one or more tables of data. When calling CreateConceptSetDatasets, the concept sets, their domains and the associated codes are listed as input in the format of multi-level lists.
+#' A concept set is a set of medical concepts (eg the concept set "DIABETES" may contain the concepts "type 2 diabetes" and "type 1 diabetes") that may be recorded in the tables of data in some coding systems (for instance, "ICD10", or "ATC"). Each concept set is associated to a data domain (eg "diagnosis" or "medication") which is the topic of one or more tables of data. When calling CreateConceptSetDatasets, the concept sets, their domains and the associated codes are listed as input in the format of multi-level lists.
 #'
 #' @seealso
 #'
@@ -41,13 +41,19 @@
 #'
 #'#'CHECK VOCABULARY
 CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVattributes, dateformat, rename_col,
-                                     concept_set_domains, concept_set_codes, concept_set_codes_excl, concept_set_names,
-                                     vocabulary, filter = NULL, addtabcol = T, verbose = F, discard_from_environment = F,
-                                     dirinput = getwd(), diroutput = getwd(), extension, vocabularies_with_dot_wildcard,
-                                     vocabularies_with_keep_dot) {
+                                     filter_expression, concept_set_domains, concept_set_codes, concept_set_codes_excl,
+                                     concept_set_names, vocabulary, addtabcol = T, verbose = F,
+                                     discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
+                                     extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot) {
 
   #Check that output folder exist otherwise create it
   dir.create(file.path(diroutput), showWarnings = FALSE)
+
+  if (extension == F) {
+    extension_flag = T
+  } else {
+    extension_flag = F
+  }
 
   if (missing(concept_set_names)) {
     concept_set_names = unique(names(concept_set_domains))
@@ -75,7 +81,14 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
     for (df2 in dataset_in_dom) {
       print(paste0("I'm analysing table ", df2, " [for domain ", dom, "]"))
-      path = paste0(dirinput, "/", df2, ".", extension)
+      if (extension_flag) {
+        files <- list.files(dirinput)
+        file_name <- files[stringr::str_detect(files, df2)]
+        extension <- paste0(stringr::str_extract(file_name, "(?<=\\.).*"))
+      } else {
+        file_name <- paste0(df2, ".", extension)
+      }
+      path = paste0(dirinput, "/", file_name)
       if (extension == "dta") {used_df <- as.data.table(haven::read_dta(path))
       } else if (extension == "csv") {used_df <- fread(path)
       } else if (extension == "RData") {assign('used_df', get(load(path)))
@@ -95,8 +108,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
       }
 
-      if (!is.null(filter)) {
-        used_df <- used_df[eval(parse(text = filter)), ]
+      if (!missing(filter_expression[[dom]])) {
+        used_df <- used_df[eval(parse(text = filter_expression[[dom]])), ]
       }
 
       #for each dataset search for the codes in all concept sets

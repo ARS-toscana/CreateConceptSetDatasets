@@ -23,5 +23,4 @@ CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          discard_from_environment = F,
                          dirinput = dirinput,
                          diroutput = diroutput,
-                         extension = c("csv"),
                          vocabularies_with_dot_wildcard=c("READ"))

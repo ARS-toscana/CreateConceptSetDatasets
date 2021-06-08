@@ -275,7 +275,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     print(paste("Merging and saving the concept", concept))
     final_concept <- data.table()
 
-    for (single_file in partial_concepts[str_detect(partial_concepts, concept)]) {
+    for (single_file in partial_concepts[str_detect(partial_concepts, paste0("^", concept))]) {
       load(file = paste0(diroutput, "/", single_file, ".RData"))
       final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
       file.remove(paste0(diroutput, "/", single_file, ".RData"))

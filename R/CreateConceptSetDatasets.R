@@ -86,7 +86,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       }
       path = paste0(dirinput, "/", file_name)
       if (extension == "dta") {used_df <- as.data.table(haven::read_dta(path))
-      } else if (extension == "csv") {used_df <- fread(path)
+      } else if (extension == "csv") {
+        namecorrect= codvar[[dom]][[df2]]
+        used_df <- fread(path, colClasses = list(character = namecorrect, character="person_id"))
       } else if (extension == "RData") {assign('used_df', get(load(path)))
       } else {stop("File extension not recognized. Please use a supported file")}
 
@@ -238,7 +240,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         } else {
           setnames(used_df, col_concept, "Col")
           filtered_concept <- copy(used_df)[Filter == 1, ][, c("Filter", "Table_cdm") := list(NULL, df2)]
-          used_df <- used_df[, c("Filter", "Col") := NULL]
+          used_df <- used_df[, "Filter" := NULL]
         }
 
         if (codvar[[dom]][[df2]] %in% names(filtered_concept)) {

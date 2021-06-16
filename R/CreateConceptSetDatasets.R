@@ -243,8 +243,10 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           used_df <- used_df[, "Filter" := NULL]
         }
 
-        if (codvar[[dom]][[df2]] %in% names(filtered_concept)) {
-          setnames(filtered_concept, col, "codvar")
+        for (col in codvar[[dom]][[df2]]) {
+          if (col %in% names(filtered_concept)) {
+            setnames(filtered_concept, col, "codvar")
+          }
         }
 
         if(!missing(rename_col)){

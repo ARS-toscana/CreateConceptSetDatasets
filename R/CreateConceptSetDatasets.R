@@ -238,6 +238,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           filtered_concept <- copy(used_df)[Filter == 1, ][, Filter := NULL]
           used_df <- used_df[, Filter := NULL]
         } else {
+          if ("Col" %in% names(used_df)) {
+            used_df[, Col := NULL]
+          }
           setnames(used_df, col_concept, "Col")
           filtered_concept <- copy(used_df)[Filter == 1, ][, c("Filter", "Table_cdm") := list(NULL, df2)]
           used_df <- used_df[, "Filter" := NULL]

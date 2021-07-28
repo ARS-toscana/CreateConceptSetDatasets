@@ -11,8 +11,6 @@ source(paste0(thisdir,"/p_parameters/parameters_program.R"))
 source(paste0(thisdir,"/p_parameters/parameters_CDM.R"))
 source(paste0(thisdir,"/p_parameters/concept_sets.R"))
 
-
-
 CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          dataset = Example_CDM_tables,
                          codvar = Example_CDM_codvar,
@@ -25,5 +23,4 @@ CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          discard_from_environment = F,
                          dirinput = dirinput,
                          diroutput = diroutput,
-                         extension = c("csv"),
                          vocabularies_with_dot_wildcard=c("READ"))

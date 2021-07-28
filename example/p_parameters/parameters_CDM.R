@@ -56,7 +56,7 @@ for (dom in alldomain) {
 #NB: GENERAL  contains the names columns will have in the final datasets
 
 person_id <- vector(mode="list")
-date<- vector(mode="list")
+date <- vector(mode="list")
 
 for (dom in alldomain) {
   for (i in 1:(length(Example_CDM_EAV_tables[[dom]]))){

@@ -62,7 +62,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
   concept_set_dom <- split(names(concept_set_domains), unlist(concept_set_domains))
 
-  partial_concepts <- vector(mode = "list")
+  partial_concepts <- data.table::data.table(concept_name = character(), name_df = character())
 
   for (dom in used_domains) {
 
@@ -163,7 +163,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 print(paste("Using all codes for concept", concept))
                 used_df[, Filter:=1]
                 # NOTE next or break? all codes is for all type of codes or just one?
-                used_df[, .(col_concept) := codvar[[dom]][[df2]][1]]
+                used_df[, (col_concept) := codvar[[dom]][[df2]][1]]
                 next
               }
 
@@ -265,7 +265,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         name_export_df <- paste0(concept, "_", df2, "_", dom)
 
         assign(name_export_df, filtered_concept)
-        partial_concepts <- append(partial_concepts, name_export_df)
+        partial_concepts <- data.table::rbindlist(list(partial_concepts, list(concept, name_export_df)))
         save(name_export_df,
              file = paste0(diroutput, "/", concept, "_", df2, "_", dom, ".RData"),
              list = name_export_df)
@@ -282,7 +282,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     print(paste("Merging and saving the concept", concept))
     final_concept <- data.table()
 
-    for (single_file in partial_concepts[str_detect(partial_concepts, paste0("^", concept))]) {
+    for (single_file in partial_concepts[concept_name == concept, name_df]) {
       load(file = paste0(diroutput, "/", single_file, ".RData"))
       final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
       file.remove(paste0(diroutput, "/", single_file, ".RData"))

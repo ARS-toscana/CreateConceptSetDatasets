@@ -9,7 +9,9 @@ diroutput <- paste0(thisdir,"/g_output/")
 dirinput <- paste0(thisdir,"/i_input/")
 extension <- c(".csv")
 
-source(paste0(thisdir,"/","CreateConceptSetDatasets.R"))
+setwd("..")
+dirbase<-getwd()
+source(paste0(dirbase,"/R/","CreateConceptSetDatasets.R"))
 
 ###################################################################
 # CREATE FOLDERS

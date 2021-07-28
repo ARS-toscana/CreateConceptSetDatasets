@@ -2,7 +2,7 @@
 # ASSIGN PARAMETERS DESCRIBING THE DATA MODEL OF THE INPUT FILES
 ###################################################################
 
-# assign -Example_CDM_tables-: it is a 2-level list describing the Example CDM tables, and will enter the function as the first parameter. the first level is the data domain (in the example: 'Diagnosis' and 'Medicines') and the second level is the list of tables that has a column pertaining to that data domain 
+# assign -Example_CDM_tables-: it is a 2-level list describing the Example CDM tables, and will enter the function as the first parameter. the first level is the data domain (in the example: 'Diagnosis' and 'Medicines') and the second level is the list of tables that has a column pertaining to that data domain
 
 Example_CDM_tables <- vector(mode="list")
 
@@ -52,11 +52,11 @@ for (dom in alldomain) {
 }
 
 
-# assign 2 more 2-level lists: -id- -date-. They encode from the data model the name of the column(s) of each data table that contain, respectively, the personal identifier and the date. Those 2 lists are to be inputted in the rename_col option of the function. 
+# assign 2 more 2-level lists: -id- -date-. They encode from the data model the name of the column(s) of each data table that contain, respectively, the personal identifier and the date. Those 2 lists are to be inputted in the rename_col option of the function.
 #NB: GENERAL  contains the names columns will have in the final datasets
 
 person_id <- vector(mode="list")
-date<- vector(mode="list")
+date <- vector(mode="list")
 
 for (dom in alldomain) {
   for (i in 1:(length(Example_CDM_EAV_tables[[dom]]))){

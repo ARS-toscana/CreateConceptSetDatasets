@@ -62,13 +62,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
   concept_set_dom <- split(names(concept_set_domains), unlist(concept_set_domains))
 
-  partial_concepts <- data.table::data.table(concept_name = character(), name_df = character())
+  partial_concepts <- vector(mode = "list")
 
   for (dom in used_domains) {
 
     dataset_in_dom <- dataset[[dom]]
     if (!missing(EAVtables) && !missing(EAVattributes) && dom %in% names(EAVtables) && length(EAVattributes)!=0) {
-      for (EAVtab_dom in EAVtables[[dom]]) {
+      for (EAVtab_dom in names(EAVattributes[[dom]])) {
         dataset_in_dom <- append(dataset_in_dom, EAVtab_dom[[1]][[1]])
       }
     }
@@ -163,7 +163,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 print(paste("Using all codes for concept", concept))
                 used_df[, Filter:=1]
                 # NOTE next or break? all codes is for all type of codes or just one?
-                used_df[, (col_concept) := codvar[[dom]][[df2]][1]]
+                used_df[, .(col_concept) := codvar[[dom]][[df2]][1]]
                 next
               }
 
@@ -174,16 +174,15 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 column_to_search <- paste0(col, "_tmp")
                 vocab_dom_df2_eq_type_cod <- TRUE
 
-                if (!missing(vocabulary) && df2 %in% dataset[[dom]] && dom %in% names(vocabulary)) {
+                if (!missing(vocabulary) && dom %in% names(vocabulary)) {
                   if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
                     pattern <- paste(pattern_base, collapse = "|")
                     column_to_search <- col
-                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                   } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
                     pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
                     column_to_search <- col
-                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                   }
+                  vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                 }
 
                 used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern),
@@ -192,11 +191,12 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
               } else {
                 for (EAVtab_dom in EAVtables[[dom]]) {
                   if (df2 %in% EAVtab_dom[[1]][[1]]) {
-                    used_df[(stringr::str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))), c("Filter", col_concept) := list(1, list(c(get(EAVtab_dom[[1]][[2]]), get(EAVtab_dom[[1]][[3]]))))]
+                    used_df[(stringr::str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtab_dom[[1]][[2]]), get(EAVtab_dom[[1]][[3]]))))]
                   }
                 }
               }
             }
+
 
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
@@ -217,12 +217,11 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   if (!missing(vocabularies_with_dot_wildcard) && type_cod_2 %in% vocabularies_with_dot_wildcard) {
                     pattern <- paste(pattern_base, collapse = "|")
                     column_to_search <- col
-                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
                   } else if (!missing(vocabularies_with_keep_dot) && type_cod_2 %in% vocabularies_with_keep_dot) {
                     pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
                     column_to_search <- col
-                    vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
                   }
+                  vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
                 }
 
                 used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern), Filter := 0]
@@ -246,11 +245,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           used_df <- used_df[, "Filter" := NULL]
         }
 
-        i = 1
         for (col in codvar[[dom]][[df2]]) {
           if (col %in% names(filtered_concept)) {
-            setnames(filtered_concept, col, paste0("codvar", i))
-            i = i + 1
+            setnames(filtered_concept, col, "codvar")
           }
         }
 
@@ -267,7 +264,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         name_export_df <- paste0(concept, "_", df2, "_", dom)
 
         assign(name_export_df, filtered_concept)
-        partial_concepts <- data.table::rbindlist(list(partial_concepts, list(concept, name_export_df)))
+        partial_concepts <- append(partial_concepts, name_export_df)
         save(name_export_df,
              file = paste0(diroutput, "/", concept, "_", df2, "_", dom, ".RData"),
              list = name_export_df)
@@ -284,7 +281,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     print(paste("Merging and saving the concept", concept))
     final_concept <- data.table()
 
-    for (single_file in partial_concepts[concept_name == concept, name_df]) {
+    for (single_file in partial_concepts[str_detect(partial_concepts, paste0("^", concept))]) {
       load(file = paste0(diroutput, "/", single_file, ".RData"))
       final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
       file.remove(paste0(diroutput, "/", single_file, ".RData"))

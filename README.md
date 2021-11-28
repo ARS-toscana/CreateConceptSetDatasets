@@ -1,3 +1,1 @@
-# See the wiki
-
-Link [here](https://github.com/ARS-toscana/CreateConceptSetDatasets/wiki)
+# See the wiki at [this link](https://github.com/ARS-toscana/CreateConceptSetDatasets/wiki)

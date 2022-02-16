@@ -43,9 +43,9 @@ ConCDM_SIM_200421_00013,20140822,20140822,34590,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00013,20140822,20140822,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_42
 ConCDM_SIM_200421_00013,20150628,20150628,7802,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_43
 ConCDM_SIM_200421_00013,20150628,20150628,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_44
-ConCDM_SIM_200421_00013,20160728,20160728,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_45
+ConCDM_SIM_200421_00013,20160728,20160728,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_45
 ConCDM_SIM_200421_00013,20160728,20160728,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_46
-ConCDM_SIM_200421_00013,20161004,20161004,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_47
+ConCDM_SIM_200421_00013,20161004,20161004,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_47
 ConCDM_SIM_200421_00013,20161004,20161004,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_48
 ConCDM_SIM_200421_00013,20190828,20190828,9239,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_49
 ConCDM_SIM_200421_00013,20190828,20190828,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_50
@@ -71,7 +71,7 @@ ConCDM_SIM_200421_00018,20130808,20130808,49390,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00018,20130808,20130808,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_70
 ConCDM_SIM_200421_00018,20131121,20131121,4659,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_71
 ConCDM_SIM_200421_00018,20131121,20131121,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_72
-ConCDM_SIM_200421_00018,20140121,20140121,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_73
+ConCDM_SIM_200421_00018,20140121,20140121,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_73
 ConCDM_SIM_200421_00018,20140121,20140121,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_74
 ConCDM_SIM_200421_00018,20141213,20141213,V719,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_75
 ConCDM_SIM_200421_00018,20141213,20141213,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_76
@@ -91,7 +91,7 @@ ConCDM_SIM_200421_00020,20120322,20120322,3384,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00020,20120322,20120322,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_90
 ConCDM_SIM_200421_00020,20120715,20120715,9953,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_91
 ConCDM_SIM_200421_00020,20120715,20120715,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_92
-ConCDM_SIM_200421_00020,20130316,20130316,0390,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_93
+ConCDM_SIM_200421_00020,20130316,20130316,390,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_93
 ConCDM_SIM_200421_00020,20130316,20130316,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_94
 ConCDM_SIM_200421_00020,20130430,20130430,71990,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_95
 ConCDM_SIM_200421_00020,20130430,20130430,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_96
@@ -167,7 +167,7 @@ ConCDM_SIM_200421_00027,20171219,20171219,8500,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00027,20171219,20171219,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_166
 ConCDM_SIM_200421_00028,20100609,20100609,7862,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_167
 ConCDM_SIM_200421_00028,20100609,20100609,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_168
-ConCDM_SIM_200421_00028,20100910,20100910,0542,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_169
+ConCDM_SIM_200421_00028,20100910,20100910,542,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_169
 ConCDM_SIM_200421_00028,20100910,20100910,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_170
 ConCDM_SIM_200421_00028,20110305,20110305,30789,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_171
 ConCDM_SIM_200421_00028,20110305,20110305,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_172
@@ -273,7 +273,7 @@ ConCDM_SIM_200421_00051,20181018,20181018,9245,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00051,20181018,20181018,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_272
 ConCDM_SIM_200421_00052,20190411,20190411,9248,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_273
 ConCDM_SIM_200421_00052,20190411,20190411,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_274
-ConCDM_SIM_200421_00053,20190308,20190308,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_275
+ConCDM_SIM_200421_00053,20190308,20190308,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_275
 ConCDM_SIM_200421_00053,20190308,20190308,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_276
 ConCDM_SIM_200421_00054,20151227,20151227,60820,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_277
 ConCDM_SIM_200421_00054,20151227,20151227,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_278
@@ -449,7 +449,7 @@ ConCDM_SIM_200421_00092,20130222,20130222,41091,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00092,20130222,20130222,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_448
 ConCDM_SIM_200421_00092,20200119,20200119,8678,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_449
 ConCDM_SIM_200421_00092,20200119,20200119,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_450
-ConCDM_SIM_200421_00097,20100504,20100504,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_451
+ConCDM_SIM_200421_00097,20100504,20100504,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_451
 ConCDM_SIM_200421_00097,20100504,20100504,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_452
 ConCDM_SIM_200421_00097,20140928,20140928,6829,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_453
 ConCDM_SIM_200421_00097,20140928,20140928,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_454
@@ -509,7 +509,7 @@ ConCDM_SIM_200421_00110,20191226,20191226,485,ICD9,,,,emergency_room_diagnosis,a
 ConCDM_SIM_200421_00110,20191226,20191226,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_508
 ConCDM_SIM_200421_00113,20181212,20181212,81400,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_509
 ConCDM_SIM_200421_00113,20181212,20181212,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_510
-ConCDM_SIM_200421_00116,20100612,20100612,0090,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_511
+ConCDM_SIM_200421_00116,20100612,20100612,90,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_511
 ConCDM_SIM_200421_00116,20100612,20100612,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_512
 ConCDM_SIM_200421_00116,20110303,20110303,51911,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_513
 ConCDM_SIM_200421_00116,20110303,20110303,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_514
@@ -865,7 +865,7 @@ ConCDM_SIM_200421_00159,20170508,20170508,38870,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00159,20170508,20170508,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_864
 ConCDM_SIM_200421_00159,20170608,20170608,9245,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_865
 ConCDM_SIM_200421_00159,20170608,20170608,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_866
-ConCDM_SIM_200421_00159,20170711,20170711,00864,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_867
+ConCDM_SIM_200421_00159,20170711,20170711,864,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_867
 ConCDM_SIM_200421_00159,20170711,20170711,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_868
 ConCDM_SIM_200421_00159,20171023,20171023,462,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_869
 ConCDM_SIM_200421_00159,20171023,20171023,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_870
@@ -911,7 +911,7 @@ ConCDM_SIM_200421_00165,20130511,20130511,7998,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00165,20130511,20130511,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_910
 ConCDM_SIM_200421_00165,20130627,20130627,9245,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_911
 ConCDM_SIM_200421_00165,20130627,20130627,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_912
-ConCDM_SIM_200421_00165,20160216,20160216,0879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_913
+ConCDM_SIM_200421_00165,20160216,20160216,879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_913
 ConCDM_SIM_200421_00165,20160216,20160216,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_914
 ConCDM_SIM_200421_00165,20160310,20160310,5409,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_915
 ConCDM_SIM_200421_00165,20160310,20160310,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_916
@@ -943,7 +943,7 @@ ConCDM_SIM_200421_00171,20160920,20160920,7806,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00171,20160920,20160920,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_942
 ConCDM_SIM_200421_00171,20170110,20170110,462,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_943
 ConCDM_SIM_200421_00171,20170110,20170110,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_944
-ConCDM_SIM_200421_00171,20170316,20170316,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_945
+ConCDM_SIM_200421_00171,20170316,20170316,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_945
 ConCDM_SIM_200421_00171,20170316,20170316,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_946
 ConCDM_SIM_200421_00171,20180901,20180901,5589,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_947
 ConCDM_SIM_200421_00171,20180901,20180901,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_948
@@ -1301,7 +1301,7 @@ ConCDM_SIM_200421_00257,20191205,20191205,9239,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00257,20191205,20191205,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1300
 ConCDM_SIM_200421_00262,20171026,20171026,4659,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1301
 ConCDM_SIM_200421_00262,20171026,20171026,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1302
-ConCDM_SIM_200421_00262,20180714,20180714,0879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1303
+ConCDM_SIM_200421_00262,20180714,20180714,879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1303
 ConCDM_SIM_200421_00262,20180714,20180714,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1304
 ConCDM_SIM_200421_00262,20190301,20190301,8500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1305
 ConCDM_SIM_200421_00262,20190301,20190301,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1306
@@ -1359,7 +1359,7 @@ ConCDM_SIM_200421_00270,20130718,20130718,64003,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00270,20130718,20130718,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1358
 ConCDM_SIM_200421_00270,20130927,20130927,34500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1359
 ConCDM_SIM_200421_00270,20130927,20130927,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1360
-ConCDM_SIM_200421_00270,20131218,20131218,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1361
+ConCDM_SIM_200421_00270,20131218,20131218,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1361
 ConCDM_SIM_200421_00270,20131218,20131218,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1362
 ConCDM_SIM_200421_00271,20160302,20160302,38610,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1363
 ConCDM_SIM_200421_00271,20160302,20160302,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1364
@@ -1373,7 +1373,7 @@ ConCDM_SIM_200421_00272,20140715,20140715,7880,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00272,20140715,20140715,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1372
 ConCDM_SIM_200421_00272,20180805,20180805,3709,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1373
 ConCDM_SIM_200421_00272,20180805,20180805,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1374
-ConCDM_SIM_200421_00272,20180913,20180913,0559,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1375
+ConCDM_SIM_200421_00272,20180913,20180913,559,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1375
 ConCDM_SIM_200421_00272,20180913,20180913,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1376
 ConCDM_SIM_200421_00276,20150519,20150519,3510,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1377
 ConCDM_SIM_200421_00276,20150519,20150519,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1378
@@ -1453,9 +1453,9 @@ ConCDM_SIM_200421_00284,20130907,20130907,9239,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00284,20130907,20130907,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1452
 ConCDM_SIM_200421_00284,20160510,20160510,78079,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1453
 ConCDM_SIM_200421_00284,20160510,20160510,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1454
-ConCDM_SIM_200421_00284,20170425,20170425,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1455
+ConCDM_SIM_200421_00284,20170425,20170425,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1455
 ConCDM_SIM_200421_00284,20170425,20170425,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1456
-ConCDM_SIM_200421_00284,20170706,20170706,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1457
+ConCDM_SIM_200421_00284,20170706,20170706,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1457
 ConCDM_SIM_200421_00284,20170706,20170706,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1458
 ConCDM_SIM_200421_00284,20180213,20180213,9245,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1459
 ConCDM_SIM_200421_00284,20180213,20180213,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1460
@@ -1567,7 +1567,7 @@ ConCDM_SIM_200421_00321,20140212,20140212,8500,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00321,20140212,20140212,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1566
 ConCDM_SIM_200421_00321,20160521,20160521,6929,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1567
 ConCDM_SIM_200421_00321,20160521,20160521,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1568
-ConCDM_SIM_200421_00325,20161226,20161226,0539,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1569
+ConCDM_SIM_200421_00325,20161226,20161226,539,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1569
 ConCDM_SIM_200421_00325,20161226,20161226,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1570
 ConCDM_SIM_200421_00326,20180403,20180403,87340,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1571
 ConCDM_SIM_200421_00326,20180403,20180403,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1572
@@ -1679,7 +1679,7 @@ ConCDM_SIM_200421_00359,20191015,20191015,7880,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00359,20191015,20191015,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1678
 ConCDM_SIM_200421_00360,20100306,20100306,9249,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1679
 ConCDM_SIM_200421_00360,20100306,20100306,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1680
-ConCDM_SIM_200421_00360,20161216,20161216,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1681
+ConCDM_SIM_200421_00360,20161216,20161216,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1681
 ConCDM_SIM_200421_00360,20161216,20161216,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1682
 ConCDM_SIM_200421_00360,20180127,20180127,650,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1683
 ConCDM_SIM_200421_00360,20180127,20180127,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1684
@@ -1693,19 +1693,19 @@ ConCDM_SIM_200421_00365,20121024,20121024,38200,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00365,20121024,20121024,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1692
 ConCDM_SIM_200421_00366,20130819,20130819,4538,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1693
 ConCDM_SIM_200421_00366,20130819,20130819,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1694
-ConCDM_SIM_200421_00366,20190714,20190714,00000,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1695
+ConCDM_SIM_200421_00366,20190714,20190714,0,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1695
 ConCDM_SIM_200421_00366,20190714,20190714,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1696
 ConCDM_SIM_200421_00366,20190729,20190729,71500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1697
 ConCDM_SIM_200421_00366,20190729,20190729,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1698
 ConCDM_SIM_200421_00367,20160819,20160819,33829,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1699
 ConCDM_SIM_200421_00367,20160819,20160819,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1700
-ConCDM_SIM_200421_00368,20120826,20120826,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1701
+ConCDM_SIM_200421_00368,20120826,20120826,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1701
 ConCDM_SIM_200421_00368,20120826,20120826,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1702
 ConCDM_SIM_200421_00368,20130318,20130318,46611,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1703
 ConCDM_SIM_200421_00368,20130318,20130318,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1704
 ConCDM_SIM_200421_00368,20130622,20130622,4770,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1705
 ConCDM_SIM_200421_00368,20130622,20130622,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1706
-ConCDM_SIM_200421_00368,20130823,20130823,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1707
+ConCDM_SIM_200421_00368,20130823,20130823,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1707
 ConCDM_SIM_200421_00368,20130823,20130823,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1708
 ConCDM_SIM_200421_00368,20131002,20131002,7806,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1709
 ConCDM_SIM_200421_00368,20131002,20131002,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1710
@@ -1949,7 +1949,7 @@ ConCDM_SIM_200421_00414,20110312,20110312,7746,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00414,20110312,20110312,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1948
 ConCDM_SIM_200421_00414,20120202,20120202,4660,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1949
 ConCDM_SIM_200421_00414,20120202,20120202,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1950
-ConCDM_SIM_200421_00414,20170417,20170417,0570,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1951
+ConCDM_SIM_200421_00414,20170417,20170417,570,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1951
 ConCDM_SIM_200421_00414,20170417,20170417,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1952
 ConCDM_SIM_200421_00414,20170820,20170820,33811,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_1953
 ConCDM_SIM_200421_00414,20170820,20170820,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_1954
@@ -2033,7 +2033,7 @@ ConCDM_SIM_200421_00435,20200318,20200318,9245,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00435,20200318,20200318,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2032
 ConCDM_SIM_200421_00436,20100725,20100725,7998,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2033
 ConCDM_SIM_200421_00436,20100725,20100725,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2034
-ConCDM_SIM_200421_00436,20130501,20130501,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2035
+ConCDM_SIM_200421_00436,20130501,20130501,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2035
 ConCDM_SIM_200421_00436,20130501,20130501,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2036
 ConCDM_SIM_200421_00436,20141027,20141027,V679,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2037
 ConCDM_SIM_200421_00436,20141027,20141027,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2038
@@ -2045,7 +2045,7 @@ ConCDM_SIM_200421_00436,20170614,20170614,68101,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00436,20170614,20170614,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2044
 ConCDM_SIM_200421_00436,20170709,20170709,4659,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2045
 ConCDM_SIM_200421_00436,20170709,20170709,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2046
-ConCDM_SIM_200421_00436,20170831,20170831,0088,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2047
+ConCDM_SIM_200421_00436,20170831,20170831,88,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2047
 ConCDM_SIM_200421_00436,20170831,20170831,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2048
 ConCDM_SIM_200421_00436,20191211,20191211,84500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2049
 ConCDM_SIM_200421_00436,20191211,20191211,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2050
@@ -2187,9 +2187,9 @@ ConCDM_SIM_200421_00465,20130617,20130617,7999,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00465,20130617,20130617,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2186
 ConCDM_SIM_200421_00465,20181215,20181215,8449,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2187
 ConCDM_SIM_200421_00465,20181215,20181215,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2188
-ConCDM_SIM_200421_00468,20181005,20181005,00000,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2189
+ConCDM_SIM_200421_00468,20181005,20181005,0,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2189
 ConCDM_SIM_200421_00468,20181005,20181005,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2190
-ConCDM_SIM_200421_00468,20181219,20181219,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2191
+ConCDM_SIM_200421_00468,20181219,20181219,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2191
 ConCDM_SIM_200421_00468,20181219,20181219,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2192
 ConCDM_SIM_200421_00469,20130819,20130819,V5832,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2193
 ConCDM_SIM_200421_00469,20130819,20130819,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2194
@@ -2209,15 +2209,15 @@ ConCDM_SIM_200421_00479,20140330,20140330,462,ICD9,,,,emergency_room_diagnosis,a
 ConCDM_SIM_200421_00479,20140330,20140330,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2208
 ConCDM_SIM_200421_00479,20150127,20150127,462,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2209
 ConCDM_SIM_200421_00479,20150127,20150127,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2210
-ConCDM_SIM_200421_00479,20161005,20161005,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2211
+ConCDM_SIM_200421_00479,20161005,20161005,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2211
 ConCDM_SIM_200421_00479,20161005,20161005,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2212
-ConCDM_SIM_200421_00479,20161217,20161217,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2213
+ConCDM_SIM_200421_00479,20161217,20161217,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2213
 ConCDM_SIM_200421_00479,20161217,20161217,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2214
 ConCDM_SIM_200421_00480,20190423,20190423,V643,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2215
 ConCDM_SIM_200421_00480,20190423,20190423,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2216
 ConCDM_SIM_200421_00481,20181109,20181109,V679,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2217
 ConCDM_SIM_200421_00481,20181109,20181109,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2218
-ConCDM_SIM_200421_00483,20151112,20151112,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2219
+ConCDM_SIM_200421_00483,20151112,20151112,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2219
 ConCDM_SIM_200421_00483,20151112,20151112,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2220
 ConCDM_SIM_200421_00483,20151129,20151129,485,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2221
 ConCDM_SIM_200421_00483,20151129,20151129,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2222
@@ -2233,7 +2233,7 @@ ConCDM_SIM_200421_00486,20110729,20110729,485,ICD9,,,,emergency_room_diagnosis,a
 ConCDM_SIM_200421_00486,20110729,20110729,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2232
 ConCDM_SIM_200421_00486,20130103,20130103,462,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2233
 ConCDM_SIM_200421_00486,20130103,20130103,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2234
-ConCDM_SIM_200421_00486,20150526,20150526,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2235
+ConCDM_SIM_200421_00486,20150526,20150526,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2235
 ConCDM_SIM_200421_00486,20150526,20150526,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2236
 ConCDM_SIM_200421_00486,20150624,20150624,8260,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2237
 ConCDM_SIM_200421_00486,20150624,20150624,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2238
@@ -2243,7 +2243,7 @@ ConCDM_SIM_200421_00487,20120922,20120922,38610,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00487,20120922,20120922,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2242
 ConCDM_SIM_200421_00487,20150609,20150609,38610,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2243
 ConCDM_SIM_200421_00487,20150609,20150609,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2244
-ConCDM_SIM_200421_00487,20150926,20150926,0085,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2245
+ConCDM_SIM_200421_00487,20150926,20150926,85,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2245
 ConCDM_SIM_200421_00487,20150926,20150926,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2246
 ConCDM_SIM_200421_00487,20170714,20170714,78900,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2247
 ConCDM_SIM_200421_00487,20170714,20170714,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2248
@@ -2281,7 +2281,7 @@ ConCDM_SIM_200421_00495,20130720,20130720,36810,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00495,20130720,20130720,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2280
 ConCDM_SIM_200421_00495,20140815,20140815,5950,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2281
 ConCDM_SIM_200421_00495,20140815,20140815,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2282
-ConCDM_SIM_200421_00495,20160722,20160722,0090,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2283
+ConCDM_SIM_200421_00495,20160722,20160722,90,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2283
 ConCDM_SIM_200421_00495,20160722,20160722,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2284
 ConCDM_SIM_200421_00495,20180612,20180612,33811,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2285
 ConCDM_SIM_200421_00495,20180612,20180612,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2286
@@ -2617,7 +2617,7 @@ ConCDM_SIM_200421_00583,20150413,20150413,3732,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00583,20150413,20150413,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2616
 ConCDM_SIM_200421_00584,20130729,20130729,7806,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2617
 ConCDM_SIM_200421_00584,20130729,20130729,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2618
-ConCDM_SIM_200421_00584,20160510,20160510,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2619
+ConCDM_SIM_200421_00584,20160510,20160510,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2619
 ConCDM_SIM_200421_00584,20160510,20160510,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2620
 ConCDM_SIM_200421_00584,20170820,20170820,462,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2621
 ConCDM_SIM_200421_00584,20170820,20170820,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2622
@@ -2695,7 +2695,7 @@ ConCDM_SIM_200421_00597,20171215,20171215,8691,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00597,20171215,20171215,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2694
 ConCDM_SIM_200421_00597,20200326,20200326,81383,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2695
 ConCDM_SIM_200421_00597,20200326,20200326,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2696
-ConCDM_SIM_200421_00601,20191209,20191209,0539,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2697
+ConCDM_SIM_200421_00601,20191209,20191209,539,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2697
 ConCDM_SIM_200421_00601,20191209,20191209,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2698
 ConCDM_SIM_200421_00602,20130522,20130522,29594,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2699
 ConCDM_SIM_200421_00602,20130522,20130522,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2700
@@ -2707,7 +2707,7 @@ ConCDM_SIM_200421_00602,20180503,20180503,38010,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00602,20180503,20180503,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2706
 ConCDM_SIM_200421_00603,20110702,20110702,5280,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2707
 ConCDM_SIM_200421_00603,20110702,20110702,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2708
-ConCDM_SIM_200421_00604,20180121,20180121,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2709
+ConCDM_SIM_200421_00604,20180121,20180121,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2709
 ConCDM_SIM_200421_00604,20180121,20180121,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2710
 ConCDM_SIM_200421_00604,20190203,20190203,78900,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2711
 ConCDM_SIM_200421_00604,20190203,20190203,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2712
@@ -2787,7 +2787,7 @@ ConCDM_SIM_200421_00621,20170408,20170408,38870,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00621,20170408,20170408,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2786
 ConCDM_SIM_200421_00622,20161015,20161015,30500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2787
 ConCDM_SIM_200421_00622,20161015,20161015,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2788
-ConCDM_SIM_200421_00622,20170116,20170116,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2789
+ConCDM_SIM_200421_00622,20170116,20170116,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2789
 ConCDM_SIM_200421_00622,20170116,20170116,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2790
 ConCDM_SIM_200421_00622,20170403,20170403,61610,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2791
 ConCDM_SIM_200421_00622,20170403,20170403,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2792
@@ -2835,11 +2835,11 @@ ConCDM_SIM_200421_00628,20140718,20140718,3689,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00628,20140718,20140718,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2834
 ConCDM_SIM_200421_00628,20160702,20160702,27801,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2835
 ConCDM_SIM_200421_00628,20160702,20160702,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2836
-ConCDM_SIM_200421_00628,20160914,20160914,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2837
+ConCDM_SIM_200421_00628,20160914,20160914,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2837
 ConCDM_SIM_200421_00628,20160914,20160914,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2838
 ConCDM_SIM_200421_00628,20170218,20170218,9953,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2839
 ConCDM_SIM_200421_00628,20170218,20170218,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2840
-ConCDM_SIM_200421_00628,20170514,20170514,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2841
+ConCDM_SIM_200421_00628,20170514,20170514,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2841
 ConCDM_SIM_200421_00628,20170514,20170514,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2842
 ConCDM_SIM_200421_00628,20181207,20181207,33829,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2843
 ConCDM_SIM_200421_00628,20181207,20181207,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2844
@@ -2847,7 +2847,7 @@ ConCDM_SIM_200421_00628,20190124,20190124,38200,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00628,20190124,20190124,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2846
 ConCDM_SIM_200421_00628,20190512,20190512,33829,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2847
 ConCDM_SIM_200421_00628,20190512,20190512,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2848
-ConCDM_SIM_200421_00628,20200214,20200214,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2849
+ConCDM_SIM_200421_00628,20200214,20200214,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2849
 ConCDM_SIM_200421_00628,20200214,20200214,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2850
 ConCDM_SIM_200421_00629,20110809,20110809,71884,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2851
 ConCDM_SIM_200421_00629,20110809,20110809,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2852
@@ -2919,7 +2919,7 @@ ConCDM_SIM_200421_00641,20191001,20191001,9248,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00641,20191001,20191001,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2918
 ConCDM_SIM_200421_00641,20200121,20200121,42761,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2919
 ConCDM_SIM_200421_00641,20200121,20200121,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2920
-ConCDM_SIM_200421_00642,20100502,20100502,0093,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2921
+ConCDM_SIM_200421_00642,20100502,20100502,93,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2921
 ConCDM_SIM_200421_00642,20100502,20100502,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2922
 ConCDM_SIM_200421_00642,20170119,20170119,78650,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_2923
 ConCDM_SIM_200421_00642,20170119,20170119,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_2924
@@ -3071,7 +3071,7 @@ ConCDM_SIM_200421_00674,20140322,20140322,7089,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00674,20140322,20140322,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3070
 ConCDM_SIM_200421_00675,20130730,20130730,81500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3071
 ConCDM_SIM_200421_00675,20130730,20130730,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3072
-ConCDM_SIM_200421_00677,20190208,20190208,0578,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3073
+ConCDM_SIM_200421_00677,20190208,20190208,578,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3073
 ConCDM_SIM_200421_00677,20190208,20190208,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3074
 ConCDM_SIM_200421_00677,20190428,20190428,30789,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3075
 ConCDM_SIM_200421_00677,20190428,20190428,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3076
@@ -3215,7 +3215,7 @@ ConCDM_SIM_200421_00700,20200601,20200601,4619,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00700,20200601,20200601,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3214
 ConCDM_SIM_200421_00701,20190709,20190709,37200,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3215
 ConCDM_SIM_200421_00701,20190709,20190709,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3216
-ConCDM_SIM_200421_00702,20170526,20170526,0549,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3217
+ConCDM_SIM_200421_00702,20170526,20170526,549,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3217
 ConCDM_SIM_200421_00702,20170526,20170526,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3218
 ConCDM_SIM_200421_00702,20170906,20170906,4280,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3219
 ConCDM_SIM_200421_00702,20170906,20170906,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3220
@@ -3235,7 +3235,7 @@ ConCDM_SIM_200421_00702,20191010,20191010,7851,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00702,20191010,20191010,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3234
 ConCDM_SIM_200421_00702,20200604,20200604,78650,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3235
 ConCDM_SIM_200421_00702,20200604,20200604,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3236
-ConCDM_SIM_200421_00704,20130322,20130322,0844,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3237
+ConCDM_SIM_200421_00704,20130322,20130322,844,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3237
 ConCDM_SIM_200421_00704,20130322,20130322,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3238
 ConCDM_SIM_200421_00704,20141203,20141203,78900,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3239
 ConCDM_SIM_200421_00704,20141203,20141203,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3240
@@ -3261,7 +3261,7 @@ ConCDM_SIM_200421_00707,20191022,20191022,7089,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00707,20191022,20191022,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3260
 ConCDM_SIM_200421_00708,20160306,20160306,78907,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3261
 ConCDM_SIM_200421_00708,20160306,20160306,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3262
-ConCDM_SIM_200421_00708,20180329,20180329,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3263
+ConCDM_SIM_200421_00708,20180329,20180329,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3263
 ConCDM_SIM_200421_00708,20180329,20180329,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3264
 ConCDM_SIM_200421_00708,20181209,20181209,92311,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3265
 ConCDM_SIM_200421_00708,20181209,20181209,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3266
@@ -3315,7 +3315,7 @@ ConCDM_SIM_200421_00724,20130322,20130322,4660,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00724,20130322,20130322,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3314
 ConCDM_SIM_200421_00724,20151202,20151202,49390,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3315
 ConCDM_SIM_200421_00724,20151202,20151202,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3316
-ConCDM_SIM_200421_00724,20160702,20160702,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3317
+ConCDM_SIM_200421_00724,20160702,20160702,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3317
 ConCDM_SIM_200421_00724,20160702,20160702,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3318
 ConCDM_SIM_200421_00724,20170629,20170629,462,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3319
 ConCDM_SIM_200421_00724,20170629,20170629,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3320
@@ -3587,7 +3587,7 @@ ConCDM_SIM_200421_00765,20150110,20150110,71517,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00765,20150110,20150110,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3586
 ConCDM_SIM_200421_00765,20171030,20171030,84500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3587
 ConCDM_SIM_200421_00765,20171030,20171030,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3588
-ConCDM_SIM_200421_00766,20100212,20100212,038,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3589
+ConCDM_SIM_200421_00766,20100212,20100212,38,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3589
 ConCDM_SIM_200421_00766,20100212,20100212,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3590
 ConCDM_SIM_200421_00766,20121021,20121021,78906,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3591
 ConCDM_SIM_200421_00766,20121021,20121021,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3592
@@ -3709,7 +3709,7 @@ ConCDM_SIM_200421_00801,20141107,20141107,30000,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00801,20141107,20141107,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3708
 ConCDM_SIM_200421_00801,20150111,20150111,9492,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3709
 ConCDM_SIM_200421_00801,20150111,20150111,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3710
-ConCDM_SIM_200421_00801,20160120,20160120,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3711
+ConCDM_SIM_200421_00801,20160120,20160120,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3711
 ConCDM_SIM_200421_00801,20160120,20160120,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3712
 ConCDM_SIM_200421_00801,20160405,20160405,38611,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3713
 ConCDM_SIM_200421_00801,20160405,20160405,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3714
@@ -3975,7 +3975,7 @@ ConCDM_SIM_200421_00852,20190125,20190125,78900,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00852,20190125,20190125,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3974
 ConCDM_SIM_200421_00853,20091123,20091123,7241,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3975
 ConCDM_SIM_200421_00853,20091123,20091123,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3976
-ConCDM_SIM_200421_00853,20140805,20140805,0844,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3977
+ConCDM_SIM_200421_00853,20140805,20140805,844,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3977
 ConCDM_SIM_200421_00853,20140805,20140805,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3978
 ConCDM_SIM_200421_00853,20160207,20160207,64693,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_3979
 ConCDM_SIM_200421_00853,20160207,20160207,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_3980
@@ -4025,9 +4025,9 @@ ConCDM_SIM_200421_00860,20150407,20150407,7806,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00860,20150407,20150407,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4024
 ConCDM_SIM_200421_00860,20150623,20150623,78703,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4025
 ConCDM_SIM_200421_00860,20150623,20150623,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4026
-ConCDM_SIM_200421_00860,20151122,20151122,0091,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4027
+ConCDM_SIM_200421_00860,20151122,20151122,91,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4027
 ConCDM_SIM_200421_00860,20151122,20151122,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4028
-ConCDM_SIM_200421_00860,20151216,20151216,0339,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4029
+ConCDM_SIM_200421_00860,20151216,20151216,339,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4029
 ConCDM_SIM_200421_00860,20151216,20151216,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4030
 ConCDM_SIM_200421_00860,20160830,20160830,6929,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4031
 ConCDM_SIM_200421_00860,20160830,20160830,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4032
@@ -4045,7 +4045,7 @@ ConCDM_SIM_200421_00870,20130311,20130311,9251,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00870,20130311,20130311,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4044
 ConCDM_SIM_200421_00870,20130705,20130705,8500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4045
 ConCDM_SIM_200421_00870,20130705,20130705,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4046
-ConCDM_SIM_200421_00870,20140622,20140622,0090,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4047
+ConCDM_SIM_200421_00870,20140622,20140622,90,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4047
 ConCDM_SIM_200421_00870,20140622,20140622,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4048
 ConCDM_SIM_200421_00870,20160902,20160902,7806,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4049
 ConCDM_SIM_200421_00870,20160902,20160902,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4050
@@ -4079,7 +4079,7 @@ ConCDM_SIM_200421_00877,20140510,20140510,9597,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00877,20140510,20140510,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4078
 ConCDM_SIM_200421_00878,20120511,20120511,84210,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4079
 ConCDM_SIM_200421_00878,20120511,20120511,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4080
-ConCDM_SIM_200421_00878,20140206,20140206,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4081
+ConCDM_SIM_200421_00878,20140206,20140206,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4081
 ConCDM_SIM_200421_00878,20140206,20140206,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4082
 ConCDM_SIM_200421_00878,20141130,20141130,82525,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4083
 ConCDM_SIM_200421_00878,20141130,20141130,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4084
@@ -4099,7 +4099,7 @@ ConCDM_SIM_200421_00878,20170216,20170216,463,ICD9,,,,emergency_room_diagnosis,a
 ConCDM_SIM_200421_00878,20170216,20170216,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4098
 ConCDM_SIM_200421_00879,20141113,20141113,80700,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4099
 ConCDM_SIM_200421_00879,20141113,20141113,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4100
-ConCDM_SIM_200421_00880,20121214,20121214,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4101
+ConCDM_SIM_200421_00880,20121214,20121214,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4101
 ConCDM_SIM_200421_00880,20121214,20121214,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4102
 ConCDM_SIM_200421_00882,20180204,20180204,4871,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4103
 ConCDM_SIM_200421_00882,20180204,20180204,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4104
@@ -4135,7 +4135,7 @@ ConCDM_SIM_200421_00888,20150812,20150812,9245,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00888,20150812,20150812,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4134
 ConCDM_SIM_200421_00888,20180907,20180907,9243,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4135
 ConCDM_SIM_200421_00888,20180907,20180907,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4136
-ConCDM_SIM_200421_00890,20200109,20200109,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4137
+ConCDM_SIM_200421_00890,20200109,20200109,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4137
 ConCDM_SIM_200421_00890,20200109,20200109,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4138
 ConCDM_SIM_200421_00891,20100629,20100629,82525,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4139
 ConCDM_SIM_200421_00891,20100629,20100629,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4140
@@ -4159,7 +4159,7 @@ ConCDM_SIM_200421_00893,20120909,20120909,8470,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00893,20120909,20120909,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4158
 ConCDM_SIM_200421_00893,20130116,20130116,78900,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4159
 ConCDM_SIM_200421_00893,20130116,20130116,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4160
-ConCDM_SIM_200421_00894,20111109,20111109,07999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4161
+ConCDM_SIM_200421_00894,20111109,20111109,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4161
 ConCDM_SIM_200421_00894,20111109,20111109,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4162
 ConCDM_SIM_200421_00894,20160627,20160627,81600,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4163
 ConCDM_SIM_200421_00894,20160627,20160627,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4164
@@ -4205,7 +4205,7 @@ ConCDM_SIM_200421_00899,20150124,20150124,463,ICD9,,,,emergency_room_diagnosis,a
 ConCDM_SIM_200421_00899,20150124,20150124,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4204
 ConCDM_SIM_200421_00899,20150224,20150224,463,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4205
 ConCDM_SIM_200421_00899,20150224,20150224,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4206
-ConCDM_SIM_200421_00899,20170815,20170815,035,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4207
+ConCDM_SIM_200421_00899,20170815,20170815,35,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4207
 ConCDM_SIM_200421_00899,20170815,20170815,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4208
 ConCDM_SIM_200421_00905,20120101,20120101,8409,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4209
 ConCDM_SIM_200421_00905,20120101,20120101,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4210
@@ -4349,11 +4349,11 @@ ConCDM_SIM_200421_00937,20110125,20110125,3540,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00937,20110125,20110125,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4348
 ConCDM_SIM_200421_00937,20180113,20180113,84500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4349
 ConCDM_SIM_200421_00937,20180113,20180113,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4350
-ConCDM_SIM_200421_00939,20161209,20161209,0879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4351
+ConCDM_SIM_200421_00939,20161209,20161209,879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4351
 ConCDM_SIM_200421_00939,20161209,20161209,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4352
 ConCDM_SIM_200421_00939,20170926,20170926,4659,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4353
 ConCDM_SIM_200421_00939,20170926,20170926,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4354
-ConCDM_SIM_200421_00939,20180617,20180617,0879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4355
+ConCDM_SIM_200421_00939,20180617,20180617,879,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4355
 ConCDM_SIM_200421_00939,20180617,20180617,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4356
 ConCDM_SIM_200421_00939,20190408,20190408,38870,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4357
 ConCDM_SIM_200421_00939,20190408,20190408,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4358
@@ -4379,7 +4379,7 @@ ConCDM_SIM_200421_00945,20150815,20150815,9224,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00945,20150815,20150815,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4378
 ConCDM_SIM_200421_00945,20170805,20170805,7880,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4379
 ConCDM_SIM_200421_00945,20170805,20170805,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4380
-ConCDM_SIM_200421_00946,20120211,20120211,0059,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4381
+ConCDM_SIM_200421_00946,20120211,20120211,59,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4381
 ConCDM_SIM_200421_00946,20120211,20120211,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4382
 ConCDM_SIM_200421_00948,20130426,20130426,5651,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4383
 ConCDM_SIM_200421_00948,20130426,20130426,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4384
@@ -4485,7 +4485,7 @@ ConCDM_SIM_200421_00966,20190206,20190206,87340,ICD9,,,,emergency_room_diagnosis
 ConCDM_SIM_200421_00966,20190206,20190206,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4484
 ConCDM_SIM_200421_00968,20100216,20100216,A40,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4485
 ConCDM_SIM_200421_00968,20100216,20100216,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4486
-ConCDM_SIM_200421_00968,20150425,20150425,0579,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4487
+ConCDM_SIM_200421_00968,20150425,20150425,579,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4487
 ConCDM_SIM_200421_00968,20150425,20150425,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4488
 ConCDM_SIM_200421_00968,20161030,20161030,63490,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4489
 ConCDM_SIM_200421_00968,20161030,20161030,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4490
@@ -4521,7 +4521,7 @@ ConCDM_SIM_200421_00982,20170313,20170313,7231,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00982,20170313,20170313,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4520
 ConCDM_SIM_200421_00983,20130502,20130502,9150,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4521
 ConCDM_SIM_200421_00983,20130502,20130502,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4522
-ConCDM_SIM_200421_00983,20130901,20130901,0579,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4523
+ConCDM_SIM_200421_00983,20130901,20130901,579,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4523
 ConCDM_SIM_200421_00983,20130901,20130901,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4524
 ConCDM_SIM_200421_00983,20140317,20140317,7999,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4525
 ConCDM_SIM_200421_00983,20140317,20140317,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4526
@@ -4599,3 +4599,9 @@ ConCDM_SIM_200421_00999,20160825,20160825,7851,ICD9,,,,emergency_room_diagnosis,
 ConCDM_SIM_200421_00999,20160825,20160825,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4598
 ConCDM_SIM_200421_01000,20191206,20191206,84500,ICD9,,,,emergency_room_diagnosis,administrative_record,PS_4599
 ConCDM_SIM_200421_01000,20191206,20191206,,,,xxxx x xx,yes,emergency_room_presentation,administrative_record,PS_4600
+ConCDM_SIM_200421_01000,20191206,20191206,,free_text,,correct free text,,emergency_room_diagnosis,administrative_record,PS_4601
+ConCDM_SIM_200421_01000,20191206,20191206,,free_text,,incorrect free text,yes,emergency_room_presentation,administrative_record,PS_4602
+ConCDM_SIM_200421_01000,20191206,20191206,,free_text,,incorrect free text,,emergency_room_diagnosis,administrative_record,PS_4603
+ConCDM_SIM_200421_01000,20191206,20191206,,free_text,,correct free text,yes,emergency_room_presentation,administrative_record,PS_4604
+ConCDM_SIM_200421_01000,20191206,20191206,,free_text,,incorrect free text,,emergency_room_diagnosis,administrative_record,PS_4605
+ConCDM_SIM_200421_01000,20191206,20191206,,free_text,,correct free text,yes,emergency_room_presentation,administrative_record,PS_4606

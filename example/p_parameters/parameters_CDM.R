@@ -8,7 +8,10 @@ Example_CDM_tables <- vector(mode="list")
 
 files<-sub('\\.csv$', '', list.files(dirinput))
 for (i in 1:length(files)) {
-  if (str_detect(files[i],"^EVENTS"))  Example_CDM_tables[["Diagnosis"]][[(length(Example_CDM_tables[["Diagnosis"]]) + 1)]]<-files[i]
+  if (str_detect(files[i],"^EVENTS")){
+    Example_CDM_tables[["Diagnosis"]][[(length(Example_CDM_tables[["Diagnosis"]]) + 1)]]<-files[i]
+    Example_CDM_tables[["Diagnosis_free_text"]][[(length(Example_CDM_tables[["Diagnosis_free_text"]]) + 1)]]<-files[i]
+    }
   else{if (str_detect(files[i],"^MEDICINES")) Example_CDM_tables[["Medicines"]][[(length(Example_CDM_tables[["Medicines"]]) + 1)]]<-files[i] }
 }
 
@@ -40,7 +43,36 @@ for (dom in alldomain) {
       }else{
         if (dom=="Medicines") Example_CDM_codvar[[dom]][[ds]]="product_ATCcode"
         if (dom=="Diagnosis") Example_CDM_codvar[[dom]][[ds]]="event_code"
+        if (dom=="Diagnosis_free_text") Example_CDM_codvar[[dom]][[ds]]="event_free_text"
       }
+    }
+  }
+}
+
+Example_CDM_coding_system_cols <-vector(mode="list")
+if (length(Example_CDM_EAV_tables)!=0){
+  for (dom in alldomain) {
+    for (i in 1:(length(Example_CDM_EAV_tables[["Diagnosis"]]))){
+      for (ds in append(Example_CDM_tables[[dom]],Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]])) {
+        if (ds==Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]]) {
+          if (str_detect(ds,"^SURVEY_OB"))  Example_CDM_coding_system_cols[["Diagnosis"]][[ds]]="so_unit"
+          if (str_detect(ds,"^MEDICAL_OB"))  Example_CDM_coding_system_cols[["Diagnosis"]][[ds]]="mo_record_vocabulary"
+        }else{
+          # if (dom=="Medicines") Example_CDM_coding_system_cols[[dom]][[ds]]="product_ATCcode"
+          if (dom=="Diagnosis") Example_CDM_coding_system_cols[[dom]][[ds]]="event_record_vocabulary"
+          if (dom=="Procedures") Example_CDM_coding_system_cols[[dom]][[ds]]="procedure_code_vocabulary"
+        }
+      }
+    }
+  }
+}else{
+  for (dom in alldomain) {
+    for (ds in Example_CDM_tables[[dom]]) {
+      if (dom=="Diagnosis") Example_CDM_coding_system_cols[[dom]][[ds]] = "event_record_vocabulary"
+      if (dom=="Procedures") Example_CDM_coding_system_cols[[dom]][[ds]] = "procedure_code_vocabulary"
+      #    if (dom=="Medicines") Example_CDM_coding_system_cols[[dom]][[ds]] = "code_indication_vocabulary"
+      #
+      if (dom=="Diagnosis_free_text") Example_CDM_coding_system_cols[[dom]][[ds]] = "event_record_vocabulary"
     }
   }
 }
@@ -48,6 +80,7 @@ for (dom in alldomain) {
 for (dom in alldomain) {
   for (ds in Example_CDM_tables[[dom]]) {
     if (dom=="Diagnosis") Example_CDM_coding_system_cols[[dom]][[ds]] = "event_record_vocabulary"
+    if (dom=="Diagnosis_free_text") Example_CDM_coding_system_cols[[dom]][[ds]] = "event_record_vocabulary"
   }
 }
 
@@ -76,6 +109,7 @@ for (dom in alldomain) {
       }else{
         if (dom=="Medicines") date[[dom]][[ds]]="date_dispensing"
         if (dom=="Diagnosis") date[[dom]][[ds]]="start_date_record"
+        if (dom=="Diagnosis_free_text") date[[dom]][[ds]]="start_date_record"
       }
     }
   }
@@ -92,6 +126,7 @@ for (dom in alldomain) {
       }else{
         if (dom=="Medicines") Example_CDM_datevar[[dom]][[ds]]= list("date_dispensing","date_prescription")
         if (dom=="Diagnosis") Example_CDM_datevar[[dom]][[ds]]=list("start_date_record","end_date_record")
+        if (dom=="Diagnosis_free_text") Example_CDM_datevar[[dom]][[ds]]=list("start_date_record","end_date_record")
       }
     }
   }

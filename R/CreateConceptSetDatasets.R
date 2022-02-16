@@ -44,7 +44,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      filter_expression, concept_set_domains, concept_set_codes, concept_set_codes_excl,
                                      concept_set_names, vocabulary, addtabcol = T, verbose = F,
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
-                                     extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot) {
+                                     extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
+                                     vocabularies_with_exact_search) {
 
   #Check that output folder exist otherwise create it
   dir.create(file.path(diroutput), showWarnings = FALSE)
@@ -181,6 +182,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   } else if (!missing(vocabularies_with_keep_dot) && type_cod %in% vocabularies_with_keep_dot) {
                     pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
                     column_to_search <- col
+                  } else if (!missing(vocabularies_with_exact_search) && type_cod %in% vocabularies_with_exact_search) {
+                    pattern <- paste0(pattern_base, "$", collapse = "|")
+                    column_to_search <- col
                   }
                   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                 }
@@ -196,7 +200,6 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 }
               }
             }
-
 
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
@@ -219,6 +222,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                     column_to_search <- col
                   } else if (!missing(vocabularies_with_keep_dot) && type_cod_2 %in% vocabularies_with_keep_dot) {
                     pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
+                    column_to_search <- col
+                  } else if (!missing(vocabularies_with_exact_search) && type_cod %in% vocabularies_with_exact_search) {
+                    pattern <- paste0(pattern_base, "$", collapse = "|")
                     column_to_search <- col
                   }
                   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
@@ -261,12 +267,12 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           }
         }
 
-        name_export_df <- paste0(concept, "_", df2, "_", dom)
+        name_export_df <- paste0(concept, "~", df2, "~", dom)
 
         assign(name_export_df, filtered_concept)
         partial_concepts <- append(partial_concepts, name_export_df)
         save(name_export_df,
-             file = paste0(diroutput, "/", concept, "_", df2, "_", dom, ".RData"),
+             file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".RData"),
              list = name_export_df)
 
         objects_to_remove <- c(name_export_df, "filtered_concept")
@@ -281,7 +287,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     print(paste("Merging and saving the concept", concept))
     final_concept <- data.table()
 
-    for (single_file in partial_concepts[str_detect(partial_concepts, paste0("^", concept))]) {
+    for (single_file in partial_concepts[str_detect(sub("~.*", "", partial_concepts), paste0("^", concept, "$"))]) {
       load(file = paste0(diroutput, "/", single_file, ".RData"))
       final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
       file.remove(paste0(diroutput, "/", single_file, ".RData"))

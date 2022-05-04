@@ -28,7 +28,6 @@
 #' @param vocabularies_with_exact_search a list containing the vocabularies in which the codes must match exactly
 #' @param use_qs use package qs to compress final datasets and decrease computation time
 #' @importFrom data.table :=
-#' @importFrom data.table .
 #'
 #'
 #' @details
@@ -169,7 +168,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 print(paste("Using all codes for concept", concept))
                 used_df[, Filter:=1]
                 # NOTE next or break? all codes is for all type of codes or just one?
-                used_df[, .(col_concept) := codvar[[dom]][[df2]][1]]
+                used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
                 next
               }
 
@@ -266,7 +265,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         if(!missing(rename_col)){
           ###################RENAME THE COLUMNS ID AND DATE
           for (elem in names(rename_col)) {
-            data <- get(elem)
+            data <- rename_col[[elem]]
             if (data[[dom]][[df2]] %in% names(filtered_concept)) {
               data.table::setnames(filtered_concept, data[[dom]][[df2]], elem)
             }

@@ -14,7 +14,6 @@ RoxygenNote: 7.1.1
 Imports: 
     haven,
     stringr,
-    purrr,
-    readr,
     data.table,
-    lubridate
+    lubridate,
+    qs

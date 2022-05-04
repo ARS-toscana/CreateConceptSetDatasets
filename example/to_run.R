@@ -25,4 +25,5 @@ CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          dirinput = dirinput,
                          diroutput = diroutput,
                          vocabularies_with_dot_wildcard = c("READ"),
-                         vocabularies_with_exact_search = "free_text")
+                         vocabularies_with_exact_search = "free_text",
+                         use_qs = F)

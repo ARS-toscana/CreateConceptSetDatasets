@@ -45,7 +45,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      concept_set_names, vocabulary, addtabcol = T, verbose = F,
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
-                                     vocabularies_with_exact_search) {
+                                     vocabularies_with_exact_search, use_qs = F) {
 
   #Check that output folder exist otherwise create it
   dir.create(file.path(diroutput), showWarnings = FALSE)
@@ -58,6 +58,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
     dataset <- dataset[names(dataset) %in% unique(concept_set_domains)]
   }
+
+  if (use_qs) {n_threads <- data.table::getDTthreads()}
 
   used_domains <- unique(concept_set_domains)
 
@@ -271,9 +273,15 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
         assign(name_export_df, filtered_concept)
         partial_concepts <- append(partial_concepts, name_export_df)
-        save(name_export_df,
-             file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".RData"),
-             list = name_export_df)
+        if (use_qs) {
+          qs::qsave(get(name_export_df),
+                file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".qs"),
+                preset = "high", nthreads = n_threads)
+        } else {
+          save(name_export_df,
+               file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".RData"),
+               list = name_export_df)
+        }
 
         objects_to_remove <- c(name_export_df, "filtered_concept")
         rm(list = objects_to_remove)
@@ -288,9 +296,17 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     final_concept <- data.table()
 
     for (single_file in partial_concepts[str_detect(sub("~.*", "", partial_concepts), paste0("^", concept, "$"))]) {
-      load(file = paste0(diroutput, "/", single_file, ".RData"))
+      if (use_qs) {
+        assign(single_file, qs::qread(file = paste0(diroutput, "/", single_file, ".qs")))
+      } else {
+        load(file = paste0(diroutput, "/", single_file, ".RData"))
+      }
       final_concept <- rbindlist(list(final_concept, get(single_file)), fill = T)
-      file.remove(paste0(diroutput, "/", single_file, ".RData"))
+      if (use_qs) {
+        file.remove(paste0(diroutput, "/", single_file, ".qs"))
+      } else {
+        file.remove(paste0(diroutput, "/", single_file, ".RData"))
+      }
       objects_to_remove <- c(single_file)
       rm(list = objects_to_remove)
     }
@@ -301,7 +317,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       assign(concept, final_concept, envir = parent.frame())
     }
 
-    save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
+    if (use_qs) {
+      qs::qsave(get(concept),
+                file = paste0(diroutput, "/", concept, ".qs"),
+                preset = "high", nthreads = n_threads)
+    } else {
+      save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
+    }
     rm(concept, final_concept)
   }
   print(paste("Concept set datasets saved in",diroutput))

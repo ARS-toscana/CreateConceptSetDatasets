@@ -1,6 +1,6 @@
 Package: CreateConceptSetDatasets
 Type: Package
-Title: Create conceptset datasets.
+Title: Create conceptset datasets
 Version: 0.1.9
 Author: ARS
 Maintainer: The package maintainer <yourself@somewhere.net>

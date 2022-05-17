@@ -107,9 +107,21 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
       }
 
-      if (!missing(filter_expression) && !is.null(filter_expression[[dom]])) {
-        used_df <- used_df[eval(parse(text = filter_expression[[dom]])), ]
+      if(!missing(rename_col)){
+        ###################RENAME THE COLUMNS ID AND DATE
+        for (elem in names(rename_col)) {
+          data <- get(elem)
+          if (data[[dom]][[df2]] %in% names(used_df)) {
+            setnames(used_df, data[[dom]][[df2]], elem)
+          }
+        }
       }
+
+
+      if (!missing(filter_expression) && !is.null(filter_expression)) {
+        used_df <- used_df[eval(parse(text = filter_expression)), ]
+      }
+
 
       #for each dataset search for the codes in all concept sets
       for (concept in concept_set_dom[[dom]]) {
@@ -257,15 +269,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           }
         }
 
-        if(!missing(rename_col)){
-          ###################RENAME THE COLUMNS ID AND DATE
-          for (elem in names(rename_col)) {
-            data <- get(elem)
-            if (data[[dom]][[df2]] %in% names(filtered_concept)) {
-              setnames(filtered_concept, data[[dom]][[df2]], elem)
-            }
-          }
-        }
+
 
         name_export_df <- paste0(concept, "~", df2, "~", dom)
 

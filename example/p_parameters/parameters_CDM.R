@@ -90,6 +90,7 @@ for (dom in alldomain) {
 
 person_id <- vector(mode="list")
 date <- vector(mode="list")
+meaning<-vector(mode="list")
 
 for (dom in alldomain) {
   for (i in 1:(length(Example_CDM_EAV_tables[[dom]]))){
@@ -114,6 +115,23 @@ for (dom in alldomain) {
     }
   }
 }
+
+
+for (dom in alldomain) {
+  for (i in 1:(length(Example_CDM_EAV_tables[["Diagnosis"]]))){
+    for (ds in append(Example_CDM_tables[[dom]],Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]])) {
+      # if (ds==Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]]) {
+      #   if (str_detect(ds,"^SURVEY_OB")) meaning[["Diagnosis"]][[ds]]="so_date"
+      #   if (str_detect(ds,"^MEDICAL_OB")) meaning[["Diagnosis"]][[ds]]="mo_date"
+      # }else{
+        if (dom=="Medicines") meaning[[dom]][[ds]]="meaning_of_drug_record"
+        if (dom=="Diagnosis") meaning[[dom]][[ds]]="meaning_of_event"
+        if (dom=="Diagnosis_free_text") meaning[[dom]][[ds]]="meaning_of_event"
+      #}
+    }
+  }
+}
+
 
 Example_CDM_datevar<-vector(mode="list")
 

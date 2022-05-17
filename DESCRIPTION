@@ -1,6 +1,6 @@
 Package: CreateConceptSetDatasets
 Type: Package
-Title: Create conceptset datasets.
+Title: Create conceptset datasets
 Version: 0.1.9
 Author: ARS
 Maintainer: The package maintainer <yourself@somewhere.net>
@@ -10,11 +10,14 @@ Description: The function CreateConceptSetDatasets inspects a set of input table
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     haven,
     stringr,
-    purrr,
-    readr,
     data.table,
-    lubridate
+    lubridate,
+    qs
+Suggests: 
+    testthat (>= 3.0.0)
+    withr
+Config/testthat/edition: 3

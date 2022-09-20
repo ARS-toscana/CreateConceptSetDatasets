@@ -17,7 +17,7 @@ CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          datevar= Example_CDM_datevar,
                          dateformat= "YYYYmmdd",
                          rename_col = list(person_id=person_id,date=date,main_meaning=meaning),
-                         filter_expression = "main_meaning=='dispensing_in_hospital_pharmacy_for_home_use' & date>dmy('01012016')",
+                         #filter_expression = "main_meaning=='dispensing_in_hospital_pharmacy_for_home_use' & date>dmy('01012016')",
                          concept_set_domains = concept_set_domains,
                          concept_set_codes =	concept_set_codes_our_study,
                          concept_set_codes_excl = concept_set_codes_our_study_excl,
@@ -27,5 +27,6 @@ CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          diroutput = diroutput,
                          vocabularies_with_dot_wildcard = c("READ"),
                          vocabularies_with_exact_search = "free_text",
-                         use_qs = F)
+                         use_qs = F,
+                         add_conceptset_name=T)
                          #aggregate_concepts  #true/false o solo per concetti specifici??

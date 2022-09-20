@@ -1,3 +1,11 @@
+
+#Author: Olga Paoletti, Davide Messina, Rosa Gini
+
+
+
+#Date: 20/09/2022
+#version 21: addition of the parameter add_conceptset_name as an option to have the name of the conceptset in the file
+
 #'CreateConceptSetDatasets
 #'
 #' The function CreateConceptSetDatasets inspects a set of input tables af data and creates a group of datasets, each corresponding to a concept set. Each dataset contains the records of the input tables that match the corresponding concept set and is named out of it.
@@ -47,7 +55,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      concept_set_names, vocabulary, addtabcol = T, verbose = F,
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
-                                     vocabularies_with_exact_search, use_qs = F,aggregate_concepts=NULL) {
+                                     vocabularies_with_exact_search, use_qs = F,aggregate_concepts=NULL, add_conceptset_name=T) {
 
   #Check that output folder exist otherwise create it
   dir.create(file.path(diroutput), showWarnings = FALSE)
@@ -276,6 +284,10 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
 
         name_export_df <- paste0(concept, "~", df2, "~", dom)
+
+        if (!missing(add_conceptset_name)) {
+          if (add_conceptset_name==T) filtered_concept[,Conceptset:=concept]
+        }
 
         assign(name_export_df, filtered_concept)
         partial_concepts <- append(partial_concepts, name_export_df)

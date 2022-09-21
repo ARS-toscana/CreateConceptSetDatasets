@@ -3,7 +3,8 @@ if (!require("data.table")) install.packages("data.table")
 library(data.table)
 if (!require("stringr")) install.packages("stringr")
 library(stringr)
-
+if (!require("lubridate")) install.packages("lubridate")
+library(lubridate)
 
 diroutput <- paste0(thisdir,"/g_output/")
 dirinput <- paste0(thisdir,"/i_input/")

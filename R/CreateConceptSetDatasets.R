@@ -1,7 +1,8 @@
 
 #Author: Olga Paoletti, Davide Messina, Rosa Gini
 
-
+#Date: 06/04/2023
+#version 22: addition of the parameter add_conceptset_name as an option to have the name of the conceptset in the file
 
 #Date: 20/09/2022
 #version 21: addition of the parameter add_conceptset_name as an option to have the name of the conceptset in the file
@@ -55,7 +56,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      concept_set_names, vocabulary, addtabcol = T, verbose = F,
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
-                                     vocabularies_with_exact_search, use_qs = F,aggregate_concepts=NULL, add_conceptset_name=T) {
+                                     vocabularies_with_exact_search, vocabularies_with_exact_search_not_dot, use_qs = F,
+                                     aggregate_concepts=NULL, add_conceptset_name=T) {
 
   #Check that output folder exist otherwise create it
   if (grepl("/$", diroutput)) {diroutput <- substr(diroutput, 1, nchar(diroutput) - 1)}
@@ -210,6 +212,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   } else if (!missing(vocabularies_with_exact_search) && type_cod %in% vocabularies_with_exact_search) {
                     pattern <- paste0(pattern_base, "$", collapse = "|")
                     column_to_search <- col
+                  } else if (!missing(vocabularies_with_exact_search_not_dot) && type_cod %in% vocabularies_with_exact_search_not_dot) {
+                    pattern <- paste0(gsub("\\.", "", pattern_base), "$", collapse = "|")
                   }
                   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                 }
@@ -251,6 +255,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   } else if (!missing(vocabularies_with_exact_search) && type_cod %in% vocabularies_with_exact_search) {
                     pattern <- paste0(pattern_base, "$", collapse = "|")
                     column_to_search <- col
+                  } else if (!missing(vocabularies_with_exact_search_not_dot) && type_cod %in% vocabularies_with_exact_search_not_dot) {
+                    pattern <- paste0(gsub("\\.", "", pattern_base), "$", collapse = "|")
                   }
                   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
                 }

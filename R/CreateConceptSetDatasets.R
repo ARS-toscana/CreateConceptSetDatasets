@@ -1,4 +1,3 @@
-
 #Author: Olga Paoletti, Davide Messina, Rosa Gini
 
 #Date: 06/04/2023
@@ -58,41 +57,49 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
                                      vocabularies_with_exact_search, vocabularies_with_exact_search_not_dot, use_qs = F,
                                      aggregate_concepts=NULL, add_conceptset_name=T) {
-
+  
   #Check that output folder exist otherwise create it
   if (grepl("/$", diroutput)) {diroutput <- substr(diroutput, 1, nchar(diroutput) - 1)}
   dir.create(file.path(diroutput), showWarnings = FALSE)
-
+  
   if (extension == F) {extension_flag = T} else {extension_flag = F}
-
+  
   if (missing(concept_set_names)) {
     concept_set_names = unique(names(concept_set_domains))
   } else {
     concept_set_domains <- concept_set_domains[names(concept_set_domains) %in% concept_set_names]
     dataset <- dataset[names(dataset) %in% unique(concept_set_domains)]
   }
-
+  
   if (use_qs) {n_threads <- data.table::getDTthreads()}
-
+  
   used_domains <- unique(concept_set_domains)
-
+  
   concept_set_dom <- split(names(concept_set_domains), unlist(concept_set_domains))
-
+  
   partial_concepts <- vector(mode = "list")
-
+  
   for (dom in used_domains) {
-
+    
     dataset_in_dom <- dataset[[dom]]
     if (!missing(EAVtables) && !missing(EAVattributes) && dom %in% names(EAVtables) && length(EAVattributes)!=0) {
       for (EAVtab_dom in names(EAVattributes[[dom]])) {
         dataset_in_dom <- append(dataset_in_dom, EAVtab_dom[[1]][[1]])
       }
     }
-
+    
     print(paste("I'm analysing domain", dom))
-
+    
+    #for (df2 in list(dataset_in_dom[[23]])) {
     for (df2 in dataset_in_dom) {
       print(paste0("I'm analysing table ", df2, " [for domain ", dom, "]"))
+      
+      # if(all(sapply(concept_set_dom[[dom]],function(concept)file.exists(paste0(diroutput, "/",concept, "~", df2, "~", dom,".RData"))))){
+      #   for(conc in concept_set_dom[[dom]])
+      #     partial_concepts <- append(partial_concepts, paste0(conc, "~", df2, "~", dom))
+      #   next
+      # }
+      
       if (extension_flag) {
         files <- list.files(dirinput)
         file_name <- files[stringr::str_detect(files, df2)][[1]]
@@ -107,10 +114,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         used_df <- data.table::fread(path, colClasses = list(character = namecorrect, character="person_id"))
       } else if (extension == "RData") {assign('used_df', get(load(path)))
       } else {stop("File extension not recognized. Please use a supported file")}
-
+      
+      if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) 
+        used_df = used_df[get(vocabulary[[dom]][[df2]])!=""] #Exclude those records with no specified vocabulary
+      
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
-
+          
           first_char <- substring(dateformat, 1,1)
           if (stringr::str_count(dateformat, "m") == 3 || stringr::str_count(dateformat, "M") == 3) {
             used_df <- used_df[, (datevar_dom_df2) := as.Date(get(datevar_dom_df2),"%d%b%Y")]
@@ -121,7 +131,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           }
         }
       }
-
+      
       if(!missing(rename_col)){
         ###################RENAME THE COLUMNS ID AND DATE
         for (elem in names(rename_col)) {
@@ -131,29 +141,28 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           }
         }
       }
-
-
+      
+      
       if (!missing(filter_expression) && !is.null(filter_expression)) {
+      #if (!is.null(filter_expression)) {
         used_df <- used_df[eval(parse(text = filter_expression)), ]
       }
-
-
-      #for each dataset search for the codes in all concept sets
-      for (concept in concept_set_dom[[dom]]) {
-
-        col_concept <- paste0("Col_",concept)
-        conc_dom <- concept_set_domains[[concept]]
-
-        print(paste("concept set", concept))
-        if (!missing(EAVtables)) {
+      
+      
+      #Pre computing used_dfAEV
+      used_dfAEVs = vector(mode="list")
+      if (!missing(EAVtables))
+        for(dom2 in used_domains){
+          used_dfAEV<-data.table::data.table()
+          
           for (p in seq_along(EAVtables[[dom]])) {
             if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
-              used_dfAEV<-data.table::data.table()
-              for (elem1 in names(EAVattributes[[concept_set_domains[[concept]]]][[df2]])) {
+              
+              for (elem1 in names(EAVattributes[[dom2]][[df2]])) {
                 #TODO improve naming of lenght_first_df2, df2_elem and EAV_concept_p
-                lenght_first_df2 <- length(EAVattributes[[conc_dom]][[df2]][[elem1]][[1]])
-                EAV_concept_p <- EAVtables[[conc_dom]][[p]]
-                for (df2_elem in EAVattributes[[conc_dom]][[df2]][[elem1]]) {
+                lenght_first_df2 <- length(EAVattributes[[dom2]][[df2]][[elem1]][[1]])
+                EAV_concept_p <- EAVtables[[dom2]][[p]]
+                for (df2_elem in EAVattributes[[dom2]][[df2]][[elem1]]) {
                   if (lenght_first_df2 >= 2){
                     used_dfAEV <- rbind(used_dfAEV, used_df[get(EAV_concept_p[[1]][[2]]) == df2_elem[[1]] & get(EAV_concept_p[[1]][[3]])==df2_elem[[2]],],fill=T)
                   }else{
@@ -161,30 +170,54 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   }
                 }
               }
-
-              # NOTE correct place and method for assignment?
-
-              used_df <- used_dfAEV
+              
+            }
+          }
+        used_dfAEVs[[dom2]] <- data.table::copy(used_dfAEV)
+      }
+      
+      #for each dataset search for the codes in all concept sets
+      for (concept in concept_set_dom[[dom]]) {
+        
+        # if(file.exists(paste0(diroutput, "/",concept, "~", df2, "~", dom, ".RData"))){
+        #   partial_concepts <- append(partial_concepts, paste0(concept, "~", df2, "~", dom))
+        #   next
+        # }
+          
+        
+        col_concept <- paste0("Col_",concept)
+        conc_dom <- concept_set_domains[[concept]]
+        
+        print(paste("concept set", concept))
+        
+        if (!missing(EAVtables)) {
+          # NOTE correct place and method for assignment?
+          for (p in seq_along(EAVtables[[dom]])) {
+            if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
+              rm(used_df)
+              gc()
+              used_df <- data.table::copy(used_dfAEVs[[conc_dom]])
+              
             }
           }
         }
-
+        
         if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
           cod_system_indataset1 <- unique(used_df[,get(vocabulary[[dom]][[df2]])])
           cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
         } else {
           cod_system_indataset <- names(concept_set_codes[[concept]])
         }
-
+        
         if (length(cod_system_indataset) == 0) {
           used_df <- used_df[, c(col_concept, "Filter") := 0, ]
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
             used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
-
+            
             for (type_cod in cod_system_indataset) {
               codes_rev <- concept_set_codes[[concept]][[type_cod]]
-
+              
               lower_codes_rev <- tolower(as.character(codes_rev))
               all_codes_str <- c("all", "all codes", "all_codes")
               if (any(all_codes_str %in% lower_codes_rev)) {
@@ -194,14 +227,14 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
                 next
               }
-
+                
               if (df2 %in% dataset[[dom]]) {################### IF I GIVE VOCABULARY IN INPUT
                 pattern_base <- paste0("^", codes_rev)
                 pattern_no_dot <- paste(gsub("\\.", "", pattern_base), collapse = "|")
                 pattern <- gsub("\\*", ".", pattern_no_dot)
                 column_to_search <- paste0(col, "_tmp")
                 vocab_dom_df2_eq_type_cod <- TRUE
-
+                
                 if (!missing(vocabulary) && dom %in% names(vocabulary)) {
                   if (!missing(vocabularies_with_dot_wildcard) && type_cod %in% vocabularies_with_dot_wildcard) {
                     pattern <- paste(pattern_base, collapse = "|")
@@ -217,19 +250,26 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   }
                   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
                 }
-
+                
                 used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern),
                         c("Filter", col_concept) := list(1, col)]
-
+                
               } else {
                 for (EAVtab_dom in EAVtables[[dom]]) {
                   if (df2 %in% EAVtab_dom[[1]][[1]]) {
-                    used_df[(stringr::str_detect(get(paste0(col, "_tmp")), gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|")))) & get(vocabulary[[dom]][[df2]]) == type_cod, c("Filter", paste0("Col_", concept)) := list(1, list(c(get(EAVtab_dom[[1]][[2]]), get(EAVtab_dom[[1]][[3]]))))]
+                    rn0_ = used_df[,get(vocabulary[[dom]][[df2]])] == type_cod
+                    if(!any(rn0_))
+                      next
+                    #rnx_ = gsub("\\*", ".", paste(gsub("\\.", "", paste0("^", codes_rev)), collapse = "|"))
+                    rnx_ = paste0("^(",gsub("\\*", ".", paste(gsub("\\.", "", codes_rev), collapse = "|")),")")
+                    rn1_ = stringr::str_detect(used_df[rn0_,get(paste0(col, "_tmp"))], rnx_)
+                    rn0_[rn0_] = rn1_
+                    used_df[rn0_, c("Filter", paste0("Col_", concept)) := list(1, paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))]
                   }
                 }
               }
             }
-
+            
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
                 cod_system_indataset1_excl<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
@@ -244,7 +284,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 pattern <- gsub("\\*", ".", pattern_no_dot)
                 column_to_search <- paste0(col, "_tmp")
                 vocab_dom_df2_eq_type_cod <- TRUE
-
+                
                 if (!missing(vocabulary) && df2 %in% dataset[[dom]] && dom %in% names(vocabulary)) {
                   if (!missing(vocabularies_with_dot_wildcard) && type_cod_2 %in% vocabularies_with_dot_wildcard) {
                     pattern <- paste(pattern_base, collapse = "|")
@@ -260,18 +300,18 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   }
                   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod_2
                 }
-
+                
                 used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern), Filter := 0]
-
+                
               }
             }
             used_df[, paste0(col, "_tmp") := NULL]
           }
         }
-
+        
         if (addtabcol == F) {
           used_df <- used_df[, col_concept := NULL]
-          filtered_concept <- data.table::copy(used_df)[Filter == 1, ][, Filter := NULL]
+          filtered_concept <- data.table::copy(used_df[Filter == 1, ])[, Filter := NULL]
           used_df <- used_df[, Filter := NULL]
         } else {
           if ("Col" %in% names(used_df)) {
@@ -279,47 +319,52 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
             used_df[, Col := NULL]
           }
           data.table::setnames(used_df, col_concept, "Col")
-          filtered_concept <- data.table::copy(used_df)[Filter == 1, ][, c("Filter", "Table_cdm") := list(NULL, df2)]
-          used_df <- used_df[, "Filter" := NULL]
+          filtered_concept <- data.table::copy(used_df[Filter == 1, ])[, c("Filter", "Table_cdm") := list(NULL, df2)]
+          used_df[, "Filter" := NULL]
         }
-
+        
         for (col in codvar[[dom]][[df2]]) {
           if (col %in% names(filtered_concept)) {
             data.table::setnames(filtered_concept, col, "codvar")
           }
         }
-
-
-        name_export_df <- paste0(concept, "~", df2, "~", dom)
-
+        
+        
         if (!missing(add_conceptset_name)) {
           if (add_conceptset_name==T) filtered_concept[,Conceptset:=concept]
         }
-
-        assign(name_export_df, filtered_concept)
+        
+        name_export_df <- paste0(concept, "~", df2, "~", dom)
         partial_concepts <- append(partial_concepts, name_export_df)
+        
+        assign(name_export_df, filtered_concept)
+        
         if (use_qs) {
           qs::qsave(get(name_export_df),
-                file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".qs"),
-                preset = "high", nthreads = n_threads)
+                    file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".qs"),
+                    preset = "high", nthreads = n_threads)
         } else {
           save(name_export_df,
                file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".RData"),
                list = name_export_df)
         }
-
+        
         objects_to_remove <- c(name_export_df, "filtered_concept")
         rm(list = objects_to_remove)
       }
+      
       rm(used_df)
+      if (!missing(EAVtables))
+        rm(used_dfAEVs)
+      
     }
   }
-
+  
   for (concept in concept_set_names) {
-
+    
     print(paste("Merging and saving the concept", concept))
     final_concept <- data.table::data.table()
-
+    
     for (single_file in partial_concepts[stringr::str_detect(sub("~.*", "", partial_concepts), paste0("^", concept, "$"))]) {
       if (use_qs) {
         assign(single_file, qs::qread(file = paste0(diroutput, "/", single_file, ".qs")))
@@ -335,13 +380,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       objects_to_remove <- c(single_file)
       rm(list = objects_to_remove)
     }
-
+    
     if (discard_from_environment) {
       assign(concept, final_concept)
     } else {
       assign(concept, final_concept, envir = parent.frame())
     }
-
+    
     if (use_qs) {
       qs::qsave(get(concept),
                 file = paste0(diroutput, "/", concept, ".qs"),

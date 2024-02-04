@@ -33,7 +33,7 @@ for (single_file in files) {
   load(single_file)
 }
 
-files <- list.files("g_output - Expected", full.names = T)
+files <- list.files("g_output_expected", full.names = T)
 files <- files[grep("\\.RData$", files)]
 for (single_file in files) {
   assign(paste0("expected_",

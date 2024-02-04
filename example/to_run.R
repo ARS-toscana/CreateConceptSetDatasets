@@ -16,12 +16,8 @@ CreateConceptSetDatasets(concept_set_names = concept_sets_of_our_study,
                          codvar = Example_CDM_codvar,
                          datevar= Example_CDM_datevar,
                          dateformat= "YYYYmmdd",
-<<<<<<< HEAD
-                         rename_col = list(person_id = person_id, date = date),
-=======
                          rename_col = list(person_id=person_id,date=date,main_meaning=meaning),
                          #filter_expression = "main_meaning=='dispensing_in_hospital_pharmacy_for_home_use' & date>dmy('01012016')",
->>>>>>> 100f095b7d5dedf1c68e82b05d5c98ae26f632c4
                          concept_set_domains = concept_set_domains,
                          concept_set_codes =	concept_set_codes_our_study,
                          concept_set_codes_excl = concept_set_codes_our_study_excl,

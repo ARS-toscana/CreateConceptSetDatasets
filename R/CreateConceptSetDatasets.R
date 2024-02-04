@@ -1,6 +1,9 @@
 
 #Author: Olga Paoletti, Davide Messina, Rosa Gini
 
+#Date: 04/02/2024
+#version 23: Fixed memory leak for EAV tables thanks to @SHayati
+
 #Date: 06/04/2023
 #version 22: addition of the parameter add_conceptset_name as an option to have the name of the conceptset in the file
 

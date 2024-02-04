@@ -8,21 +8,21 @@ Example_CDM_tables <- vector(mode="list")
 
 files<-sub('\\.csv$', '', list.files(dirinput))
 for (i in 1:length(files)) {
-  if (str_detect(files[i],"^EVENTS")){
+  if (stringr::str_detect(files[i],"^EVENTS")){
     Example_CDM_tables[["Diagnosis"]][[(length(Example_CDM_tables[["Diagnosis"]]) + 1)]]<-files[i]
     Example_CDM_tables[["Diagnosis_free_text"]][[(length(Example_CDM_tables[["Diagnosis_free_text"]]) + 1)]]<-files[i]
     }
-  else{if (str_detect(files[i],"^MEDICINES")) Example_CDM_tables[["Medicines"]][[(length(Example_CDM_tables[["Medicines"]]) + 1)]]<-files[i] }
+  else{if (stringr::str_detect(files[i],"^MEDICINES")) Example_CDM_tables[["Medicines"]][[(length(Example_CDM_tables[["Medicines"]]) + 1)]]<-files[i] }
 }
 
 #define tables for createconceptset
 Example_CDM_EAV_tables <- vector(mode="list")
 EAV_table<-c()
 for (i in 1:length(files)) {
-  if (str_detect(files[i],"^SURVEY_OB")) { Example_CDM_EAV_tables[["Diagnosis"]][[(length(Example_CDM_EAV_tables[["Diagnosis"]]) + 1)]]<-list(list(files[i], "so_source_table", "so_source_column"))
+  if (stringr::str_detect(files[i],"^SURVEY_OB")) { Example_CDM_EAV_tables[["Diagnosis"]][[(length(Example_CDM_EAV_tables[["Diagnosis"]]) + 1)]]<-list(list(files[i], "so_source_table", "so_source_column"))
   EAV_table<-append(EAV_table,files[i])
   }
-  else{if (str_detect(files[i],"^MEDICAL_OB")){ Example_CDM_EAV_tables[["Diagnosis"]][[(length(Example_CDM_EAV_tables[["Diagnosis"]]) + 1)]]<-list(list(files[i], "mo_source_table", "mo_source_column"))
+  else{if (stringr::str_detect(files[i],"^MEDICAL_OB")){ Example_CDM_EAV_tables[["Diagnosis"]][[(length(Example_CDM_EAV_tables[["Diagnosis"]]) + 1)]]<-list(list(files[i], "mo_source_table", "mo_source_column"))
   EAV_table<-append(EAV_table,files[i])}
   }
 }
@@ -38,8 +38,8 @@ for (dom in alldomain) {
   for (i in 1:(length(Example_CDM_EAV_tables[["Diagnosis"]]))){
     for (ds in append(Example_CDM_tables[[dom]],Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]])) {
       if (ds==Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]]) {
-        if (str_detect(ds,"^SURVEY_OB"))  Example_CDM_codvar[["Diagnosis"]][[ds]]="so_source_value"
-        if (str_detect(ds,"^MEDICAL_OB"))  Example_CDM_codvar[["Diagnosis"]][[ds]]="mo_source_value"
+        if (stringr::str_detect(ds,"^SURVEY_OB"))  Example_CDM_codvar[["Diagnosis"]][[ds]]="so_source_value"
+        if (stringr::str_detect(ds,"^MEDICAL_OB"))  Example_CDM_codvar[["Diagnosis"]][[ds]]="mo_source_value"
       }else{
         if (dom=="Medicines") Example_CDM_codvar[[dom]][[ds]]="product_ATCcode"
         if (dom=="Diagnosis") Example_CDM_codvar[[dom]][[ds]]="event_code"
@@ -55,8 +55,8 @@ if (length(Example_CDM_EAV_tables)!=0){
     for (i in 1:(length(Example_CDM_EAV_tables[["Diagnosis"]]))){
       for (ds in append(Example_CDM_tables[[dom]],Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]])) {
         if (ds==Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]]) {
-          if (str_detect(ds,"^SURVEY_OB"))  Example_CDM_coding_system_cols[["Diagnosis"]][[ds]]="so_unit"
-          if (str_detect(ds,"^MEDICAL_OB"))  Example_CDM_coding_system_cols[["Diagnosis"]][[ds]]="mo_record_vocabulary"
+          if (stringr::str_detect(ds,"^SURVEY_OB"))  Example_CDM_coding_system_cols[["Diagnosis"]][[ds]]="so_unit"
+          if (stringr::str_detect(ds,"^MEDICAL_OB"))  Example_CDM_coding_system_cols[["Diagnosis"]][[ds]]="mo_record_vocabulary"
         }else{
           # if (dom=="Medicines") Example_CDM_coding_system_cols[[dom]][[ds]]="product_ATCcode"
           if (dom=="Diagnosis") Example_CDM_coding_system_cols[[dom]][[ds]]="event_record_vocabulary"
@@ -104,8 +104,8 @@ for (dom in alldomain) {
   for (i in 1:(length(Example_CDM_EAV_tables[["Diagnosis"]]))){
     for (ds in append(Example_CDM_tables[[dom]],Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]])) {
       if (ds==Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]]) {
-        if (str_detect(ds,"^SURVEY_OB")) dates[["Diagnosis"]][[ds]]="so_date"
-        if (str_detect(ds,"^MEDICAL_OB")) dates[["Diagnosis"]][[ds]]="mo_date"
+        if (stringr::str_detect(ds,"^SURVEY_OB")) dates[["Diagnosis"]][[ds]]="so_date"
+        if (stringr::str_detect(ds,"^MEDICAL_OB")) dates[["Diagnosis"]][[ds]]="mo_date"
       }else{
         if (dom=="Medicines") dates[[dom]][[ds]]="date_dispensing"
         if (dom=="Diagnosis") dates[[dom]][[ds]]="start_date_record"
@@ -121,8 +121,8 @@ for (dom in alldomain) {
   for (i in 1:(length(Example_CDM_EAV_tables[["Diagnosis"]]))){
     for (ds in append(Example_CDM_tables[[dom]],Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]])) {
       if (ds==Example_CDM_EAV_tables[["Diagnosis"]][[i]][[1]][[1]]) {
-        if (str_detect(ds,"^SURVEY_OB")) Example_CDM_datevar[["Diagnosis"]][[ds]]="so_date"
-        if (str_detect(ds,"^MEDICAL_OB"))  Example_CDM_datevar[["Diagnosis"]][[ds]]="mo_date"
+        if (stringr::str_detect(ds,"^SURVEY_OB")) Example_CDM_datevar[["Diagnosis"]][[ds]]="so_date"
+        if (stringr::str_detect(ds,"^MEDICAL_OB"))  Example_CDM_datevar[["Diagnosis"]][[ds]]="mo_date"
       }else{
         if (dom=="Medicines") Example_CDM_datevar[[dom]][[ds]]= list("date_dispensing","date_prescription")
         if (dom=="Diagnosis") Example_CDM_datevar[[dom]][[ds]]=list("start_date_record","end_date_record")

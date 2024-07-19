@@ -35,7 +35,7 @@
 #' @param vocabularies_with_dot_wildcard a list containing the vocabularies in which treat the character dot in codes as wildcard
 #' @param vocabularies_with_keep_dot a list containing the vocabularies in which treat the character dot in codes as itself
 #' @param vocabularies_with_exact_search a list containing the vocabularies in which the codes must match exactly
-#' @param use_qs use package qs to compress final datasets and decrease computation time
+#' @param output_extension (optional) the extension of the output tables of data (RData is the default. Also rds and qs are supported). In case the chosen extension is qs, final datasets are compressed and  computation time decrease
 #' @importFrom data.table :=
 #'
 #'
@@ -56,7 +56,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      concept_set_names, vocabulary, addtabcol = T, verbose = F,
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
-                                     vocabularies_with_exact_search, vocabularies_with_exact_search_not_dot, use_qs = F,
+                                     vocabularies_with_exact_search, vocabularies_with_exact_search_not_dot, output_extension = "RData",
                                      aggregate_concepts=NULL, add_conceptset_name=T) {
 
   #Check that output folder exist otherwise create it
@@ -72,7 +72,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     dataset <- dataset[names(dataset) %in% unique(concept_set_domains)]
   }
 
-  if (use_qs) {n_threads <- data.table::getDTthreads()}
+
 
   used_domains <- unique(concept_set_domains)
 
@@ -340,13 +340,20 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
         assign(name_export_df, filtered_concept)
 
-        if (use_qs) {
+        if (output_extension=="qs") {
+
+          if (output_extension=="qs") {n_threads <- data.table::getDTthreads()}
+
           qs::qsave(get(name_export_df),
                     file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".qs"),
                     preset = "high", nthreads = n_threads)
-        } else {
+        } else if (output_extension=="RData") {
           save(name_export_df,
                file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".RData"),
+               list = name_export_df)
+        }else if (output_extension=="rds") {
+          save(name_export_df,
+               file = paste0(diroutput, "/", concept, "~", df2, "~", dom, ".rds"),
                list = name_export_df)
         }
 
@@ -367,17 +374,23 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     final_concept <- data.table::data.table()
 
     for (single_file in partial_concepts[stringr::str_detect(sub("~.*", "", partial_concepts), paste0("^", concept, "$"))]) {
-      if (use_qs) {
+      if (output_extension=="qs") {
         assign(single_file, qs::qread(file = paste0(diroutput, "/", single_file, ".qs")))
-      } else {
+      } else if (output_extension=="RData") {
         load(file = paste0(diroutput, "/", single_file, ".RData"))
+      } else if (output_extension=="rds") {
+        load(file = paste0(diroutput, "/", single_file, ".rds"))
       }
+
       final_concept <- data.table::rbindlist(list(final_concept, get(single_file)), fill = T)
-      if (use_qs) {
+      if (output_extension=="qs") {
         file.remove(paste0(diroutput, "/", single_file, ".qs"))
-      } else {
+      } else if (output_extension=="RData") {
         file.remove(paste0(diroutput, "/", single_file, ".RData"))
+      } else if (output_extension=="rds") {
+        file.remove(paste0(diroutput, "/", single_file, ".rds"))
       }
+
       objects_to_remove <- c(single_file)
       rm(list = objects_to_remove)
     }
@@ -388,12 +401,14 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       assign(concept, final_concept, envir = parent.frame())
     }
 
-    if (use_qs) {
+    if (output_extension=="qs") {
       qs::qsave(get(concept),
                 file = paste0(diroutput, "/", concept, ".qs"),
                 preset = "high", nthreads = n_threads)
-    } else {
-      save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
+    } else if (output_extension=="RData") {
+      save(concept, file = paste0(diroutput, "/", concept, ".",output_extension), list = concept)
+    } else if (output_extension=="rds") {
+      saveRDS(get(concept), file = paste0(diroutput, "/", concept, ".",output_extension))
     }
     rm(concept, final_concept)
   }

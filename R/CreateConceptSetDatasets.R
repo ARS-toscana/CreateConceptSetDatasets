@@ -35,9 +35,9 @@
 #' @param dirinput (optional) the directory where the input tables of data are stored. If not provided the working directory is considered.
 #' @param diroutput (optional) the directory where the output concept sets datasets will be saved. If not provided the working directory is considered.
 #' @param extension (optional) the extension of the input tables of data (csv and dta are supported)
-#' @param vocabularies_with_dot_wildcard a list containing the vocabularies in which treat the character dot in codes as wildcard
-#' @param vocabularies_with_keep_dot a list containing the vocabularies in which treat the character dot in codes as itself
-#' @param vocabularies_with_exact_search a list containing the vocabularies in which the codes must match exactly
+#' @param vocabularies_with_dot_wildcard a list containing the vocabularies in which treat the character dot in codes as wildcard. If vocabulary this option can be set to "any"
+#' @param vocabularies_with_keep_dot a list containing the vocabularies in which treat the character dot in codes as itself. If vocabulary this option can be set to "any"
+#' @param vocabularies_with_exact_search a list containing the vocabularies in which the codes must match exactly. If vocabulary this option can be set to "any"
 #' @param use_qs use package qs to compress final datasets and decrease computation time
 #' @importFrom data.table :=
 #'

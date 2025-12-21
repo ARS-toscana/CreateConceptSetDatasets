@@ -39,6 +39,14 @@ simple_CCD <- function(concept_set_names = "spam",
   .args <- as.list(match.call.defaults()[-1])
   .args <- .args[names(.args) != "..."]
 
+  dataset_list <- eval(.args$dataset)
+  for (domains in names(dataset_list)) {
+    all_input_files <- list.files(dirinput)
+    dataset_list[[domains]] <- as.list(all_input_files[grepl(dataset_list[[domains]], all_input_files)])
+  }
+
+  .args$dataset <- dataset_list
+
   if (missing(diroutput)) .args$diroutput <- withr::local_tempdir(.local_envir = parent.frame())
 
   capture.output(do.call(CreateConceptSetDatasets, .args), file = nullfile())

@@ -56,11 +56,16 @@
 #'#'CHECK VOCABULARY
 CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVattributes, dateformat, rename_col,
                                      filter_expression, concept_set_domains, concept_set_codes, concept_set_codes_excl,
-                                     concept_set_names, vocabulary, addtabcol = T, verbose = F,
+                                     concept_set_names, vocabulary, addtabcol = T, verbose = T,
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
                                      vocabularies_with_exact_search, vocabularies_with_exact_search_not_dot, use_qs = F,
                                      aggregate_concepts=NULL, add_conceptset_name=T) {
+
+  # TODO fix verbose
+  if (!verbose) {
+    defer(options(warn = 1))
+  }
 
   #Check that output folder exist otherwise create it
   if (grepl("/$", diroutput)) {diroutput <- substr(diroutput, 1, nchar(diroutput) - 1)}
@@ -387,20 +392,14 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       rm(list = objects_to_remove)
     }
 
-    if (discard_from_environment) {
-      assign(concept, final_concept)
-    } else {
-      assign(concept, final_concept, envir = parent.frame())
-    }
-
     if (use_qs) {
-      qs::qsave(get(concept),
+      qs::qsave(get(final_concept),
                 file = paste0(diroutput, "/", concept, ".qs"),
                 preset = "high", nthreads = n_threads)
     } else {
-      save(concept, file = paste0(diroutput, "/", concept, ".RData"), list = concept)
+      save(final_concept, file = paste0(diroutput, "/", concept, ".RData"))
     }
-    rm(concept, final_concept)
+    rm(final_concept)
   }
   print(paste("Concept set datasets saved in",diroutput))
 }

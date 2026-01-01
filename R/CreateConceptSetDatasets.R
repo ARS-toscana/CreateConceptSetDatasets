@@ -127,13 +127,15 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
 
         lazy_frame <- pl$scan_csv(path, schema_overrides = newlist)
-        used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
       } else if (extension == "RData") {assign('used_df', get(load(path)))
       } else {stop("File extension not recognized. Please use a supported file")}
 
-      if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]]))
-        used_df = used_df[get(vocabulary[[dom]][[df2]])!=""] #Exclude those records with no specified vocabulary
+      if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
+        # used_df = used_df[get(vocabulary[[dom]][[df2]])!=""] #Exclude those records with no specified vocabulary
+        lazy_frame <- lazy_frame$filter(pl$col(vocabulary[[dom]][[df2]]) != "")
+      }
+      used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {

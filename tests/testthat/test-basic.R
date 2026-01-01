@@ -435,3 +435,19 @@ test_that("simple retrieval (also not first)", {
 # TODO add test with Medicines
 # TODO add TEST with mix Diagnoses and Medicines
 # TODO add EAVtables support in testing
+
+##%######################################################%##
+#                                                          #
+####                MISSING VOCABULARY                  ####
+#                                                          #
+##%######################################################%##
+
+test_that('event_record_vocabulary as "" are excluded', {
+  create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,
+                               "a"       ,"ICD9"                  ,"001.0",
+                               "a"       ,""                      ,"999.9")
+  expect_equal(simple_CCD_no_vocab_type(concept_set_codes =	list(spam = list(ICD9 = c("001.0", "999.9"))),
+                                        vocabularies_with_exact_search_not_dot = c("ICD9")),
+               create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,
+                                     "a"       ,"ICD9"                  ,"001.0"))
+})

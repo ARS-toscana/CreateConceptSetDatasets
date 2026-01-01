@@ -34,21 +34,41 @@ simple_CCD <- function(concept_set_names = "spam",
                        vocabularies_with_exact_search_not_dot = c("ICD9"),
                        verbose = T,
                        ...) {
-
   if (length(concept_set_names) != 1) stop("Define a new function!")
+
   .args <- as.list(match.call.defaults()[-1])
   .args <- .args[names(.args) != "..."]
 
   dataset_list <- eval(.args$dataset)
   for (domains in names(dataset_list)) {
     all_input_files <- list.files(dirinput)
+    all_input_files <- sub('\\..*$', '', basename(all_input_files))
     dataset_list[[domains]] <- as.list(all_input_files[grepl(dataset_list[[domains]], all_input_files)])
   }
 
-  .args$dataset <- dataset_list
+  if (max(sapply(dataset_list, length)) > 1) {
+    .args$dataset <- dataset_list
+
+    codvar_list <- eval(.args$codvar)
+    new_codvar_list <- list()
+    for (domain in names(codvar_list)) {
+      for (real_df in dataset_list[[domain]]) {
+        new_codvar_list[[domain]][[real_df]] <- codvar_list[[domain]][[1]]
+      }
+    }
+    .args$codvar <- new_codvar_list
+
+    vocabulary_list <- eval(.args$vocabulary)
+    new_vocabulary_list <- list()
+    for (domain in names(vocabulary_list)) {
+      for (real_df in dataset_list[[domain]]) {
+        new_vocabulary_list[[domain]][[real_df]] <- vocabulary_list[[domain]][[1]]
+      }
+    }
+    .args$vocabulary <- new_vocabulary_list
+  }
 
   if (missing(diroutput)) .args$diroutput <- withr::local_tempdir(.local_envir = parent.frame())
-
   capture.output(do.call(CreateConceptSetDatasets, .args), file = nullfile())
 
   if (length(concept_set_names) == 1) {
@@ -56,7 +76,6 @@ simple_CCD <- function(concept_set_names = "spam",
   } else {
     return(lapply(concept_set_names, load_result, .args$diroutput))
   }
-
 }
 
 # Simplified CreateConceptSetDatasets to set default argument useful for testing and define a temporary folder to store results different from the location of the inputs

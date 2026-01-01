@@ -423,10 +423,10 @@ test_that("simple retrieval (also not first)", {
                                "b"       ,"ICD9"                  ,"999.9")
   create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,
                                "a"       ,"ICD9"                  ,"001.0")
-  expect_equal(simple_CCD(concept_set_codes =	list(spam = list(ICD9 = c("999.9", "001.0")))),
+  expect_equal(simple_CCD(concept_set_codes =	list(spam = list(ICD9 = c("999.9", "001.0"))))[, Table_cdm := NULL][order(person_id), ],
                create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,
                                      "a"       ,"ICD9"                  ,"001.0",
-                                     "b"       ,"ICD9"                  ,"999.9"))
+                                     "b"       ,"ICD9"                  ,"999.9")[, Table_cdm := NULL][order(person_id), ])
 })
 
 # TODO rework dateformat using maybe anytime and another package for dates management

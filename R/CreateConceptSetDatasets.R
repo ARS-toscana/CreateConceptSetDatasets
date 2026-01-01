@@ -137,6 +137,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       }
       used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
+      # TODO add test, then convert to polars
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
 
@@ -151,6 +152,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
       }
 
+      # TODO add test, then convert to polars
       if(!missing(rename_col)){
         ###################RENAME THE COLUMNS ID AND DATE
         for (elem in names(rename_col)) {
@@ -161,16 +163,16 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
       }
 
-
+      # TODO add test, then convert to polars
       if (!missing(filter_expression) && !is.null(filter_expression)) {
-      #if (!is.null(filter_expression)) {
+        #if (!is.null(filter_expression)) {
         used_df <- used_df[eval(parse(text = filter_expression)), ]
       }
 
-
+      # TODO add test, then convert to polars
       #Pre computing used_dfAEV
       used_dfAEVs = vector(mode="list")
-      if (!missing(EAVtables))
+      if (!missing(EAVtables)){
         for(dom2 in used_domains){
           used_dfAEV<-data.table::data.table()
 
@@ -192,7 +194,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
             }
           }
-        used_dfAEVs[[dom2]] <- data.table::copy(used_dfAEV)
+          used_dfAEVs[[dom2]] <- data.table::copy(used_dfAEV)
+        }
       }
 
       #for each dataset search for the codes in all concept sets

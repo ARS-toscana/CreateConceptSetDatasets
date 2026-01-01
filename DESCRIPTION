@@ -16,7 +16,8 @@ Imports:
     stringr,
     data.table,
     lubridate,
-    qs
+    qs,
+    polars
 Suggests: 
     testthat (>= 3.0.0),
     withr

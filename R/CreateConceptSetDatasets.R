@@ -63,9 +63,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      aggregate_concepts=NULL, add_conceptset_name=T) {
 
   # TODO fix verbose
-  if (!verbose) {
-    defer(options(warn = 1))
-  }
+  if (!verbose) defer(options(warn = 1))
 
   #Check that output folder exist otherwise create it
   if (grepl("/$", diroutput)) {diroutput <- substr(diroutput, 1, nchar(diroutput) - 1)}
@@ -119,8 +117,18 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       path = paste0(dirinput, "/", file_name)
       if (extension == "dta") {used_df <- data.table::as.data.table(haven::read_dta(path))
       } else if (extension == "csv") {
-        namecorrect= codvar[[dom]][[df2]]
-        used_df <- data.table::fread(path, colClasses = list(character = namecorrect, character="person_id"))
+
+        library(polars)
+
+        # TODO continue from here
+        newlist <- list()
+        for (change_cols in c("person_id", codvar[[dom]][[df2]])) {
+          newlist[[change_cols]] <- pl$String
+        }
+
+        lazy_frame <- pl$scan_csv(path, schema_overrides = newlist)
+        used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
+
       } else if (extension == "RData") {assign('used_df', get(load(path)))
       } else {stop("File extension not recognized. Please use a supported file")}
 

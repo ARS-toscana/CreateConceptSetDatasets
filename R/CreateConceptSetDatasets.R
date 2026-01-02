@@ -132,23 +132,27 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       } else {stop("File extension not recognized. Please use a supported file")}
 
       if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-        # used_df = used_df[get(vocabulary[[dom]][[df2]])!=""] #Exclude those records with no specified vocabulary
+        # Exclude those records with no specified vocabulary
         lazy_frame <- lazy_frame$filter(pl$col(vocabulary[[dom]][[df2]]) != "")
       }
-      used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
-      # TODO add test, then convert to polars
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
 
+          test_vect <- list()
+          test_vect[[datevar_dom_df2]] <- pl$String
+          lazy_frame <- lazy_frame$cast(!!!test_vect)
+
           first_char <- substring(dateformat, 1,1)
           if (stringr::str_count(dateformat, "m") == 3 || stringr::str_count(dateformat, "M") == 3) {
-            used_df <- used_df[, (datevar_dom_df2) := as.Date(get(datevar_dom_df2),"%d%b%Y")]
+            new_dateformat <- "%d%b%Y"
           } else if (first_char %in% c("Y", "y")) {
-            used_df <- used_df[, (datevar_dom_df2) := lubridate::ymd(get(datevar_dom_df2))]
+            new_dateformat <- "%Y%m%d"
           } else if (first_char %in% c("D", "d")) {
-            used_df <- used_df[, (datevar_dom_df2) := lubridate::dmy(get(datevar_dom_df2))]
+            new_dateformat <- "%d%m%Y"
           }
+
+          lazy_frame <- lazy_frame$with_columns(pl$col(datevar_dom_df2)$str$to_date(new_dateformat))
         }
       }
 
@@ -157,11 +161,16 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         ###################RENAME THE COLUMNS ID AND DATE
         for (elem in names(rename_col)) {
           data <- rename_col[[elem]]
-          if (data[[dom]][[df2]] %in% names(used_df)) {
-            data.table::setnames(used_df, data[[dom]][[df2]], elem)
+          if (data[[dom]][[df2]] %in% names(data.table::data.table(as.data.frame(lazy_frame$collect())))) {
+            # data.table::setnames(used_df, data[[dom]][[df2]], elem)
+            test_vect <- elem
+            names(test_vect) <- data[[dom]][[df2]]
+            lazy_frame <- lazy_frame$rename(!!!test_vect)
           }
         }
       }
+
+      used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
       # TODO add test, then convert to polars
       if (!missing(filter_expression) && !is.null(filter_expression)) {
@@ -213,19 +222,21 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         print(paste("concept set", concept))
 
         if (!missing(EAVtables)) {
+          # TODO add test, then convert to polars
           # NOTE correct place and method for assignment?
           for (p in seq_along(EAVtables[[dom]])) {
             if (df2 %in% EAVtables[[dom]][[p]][[1]][[1]]) {
               rm(used_df)
               gc()
               used_df <- data.table::copy(used_dfAEVs[[conc_dom]])
-
             }
           }
         }
 
+        # TODO to be removed. When using lazyframes this might increase computation time
         if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-          cod_system_indataset1 <- unique(used_df[,get(vocabulary[[dom]][[df2]])])
+          cod_system_indataset1 <- as.list(lazy_frame$select(pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
+          cod_system_indataset1 <- unlist(cod_system_indataset1)
           cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
         } else {
           cod_system_indataset <- names(concept_set_codes[[concept]])

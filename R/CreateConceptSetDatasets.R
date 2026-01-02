@@ -241,11 +241,10 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           cod_system_indataset <- names(concept_set_codes[[concept]])
         }
 
-        used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
-
         if (length(cod_system_indataset) == 0) {
 
           # TODO write test and then activate polars modification to test it
+          used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
           used_df <- used_df[, c(col_concept, "Filter") := 0, ]
 
@@ -256,7 +255,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           # lazy_frame <- lazy_frame$with_columns(!!!test_vect)
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
-            used_df<-used_df[, paste0(col, "_tmp") := gsub("\\.", "", get(col))]
+            lazy_frame <- lazy_frame$with_columns(pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
+
+            used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
             for (type_cod in cod_system_indataset) {
               codes_rev <- concept_set_codes[[concept]][[type_cod]]

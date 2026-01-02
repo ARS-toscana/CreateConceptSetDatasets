@@ -357,7 +357,7 @@ test_that("filter_expression works when condition TRUE", {
   result[, end_date_record := as.character(lubridate::ymd(end_date_record))]
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
-                          filter_expression = "person_id == 'a' & end_date_record > lubridate::ymd('20200101')"),
+                          filter_expression = "pl$col('person_id') == 'a' & pl$col('end_date_record') > pl$date(2020, 01, 01)"),
                result)
 })
 
@@ -366,7 +366,7 @@ test_that("filter_expression works when condition FALSE", {
                                "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
-                          filter_expression = "person_id == 'b' & end_date_record > lubridate::ymd('20200101')"),
+                          filter_expression = "pl$col('person_id') == 'b' & pl$col('end_date_record') > pl$date(2020, 01, 01)"),
                create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=))
 })
 
@@ -375,7 +375,7 @@ test_that("filter_expression works when condition FALSE even for non-equi join",
                                "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
-                          filter_expression = "person_id == 'a' & end_date_record > lubridate::ymd('20250601')"),
+                          filter_expression = "pl$col('person_id') == 'a' & pl$col('end_date_record') > pl$date(2025, 06, 01)"),
                create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=))
 })
 
@@ -391,7 +391,7 @@ test_that("filter_expression works even on renamed columns", {
                                             when = list(Diagnosis = list(EVENTS = "end_date_record"))),
                           datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
-                          filter_expression = "who == 'a' & when > lubridate::ymd('20200101')"),
+                          filter_expression = "pl$col('who') == 'a' & pl$col('when') > pl$date(2020, 01, 01)"),
                result)
 })
 
@@ -430,6 +430,7 @@ test_that("simple retrieval (also not first)", {
 })
 
 # TODO rework dateformat using maybe anytime and another package for dates management
+# TODO add tests for additional dates formats?
 # TODO write codes for implementing option verbose. It should hides all messages. Useful for testing (if implemented remove current work around)
 
 # TODO add test with Medicines

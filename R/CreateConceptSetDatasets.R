@@ -170,13 +170,14 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
       }
 
-      used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
-
       # TODO add test, then convert to polars
       if (!missing(filter_expression) && !is.null(filter_expression)) {
         #if (!is.null(filter_expression)) {
-        used_df <- used_df[eval(parse(text = filter_expression)), ]
+        # used_df <- used_df[eval(parse(text = filter_expression)), ]
+        lazy_frame <- lazy_frame$filter(eval(parse(text = filter_expression)))
       }
+
+      used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
       # TODO add test, then convert to polars
       #Pre computing used_dfAEV

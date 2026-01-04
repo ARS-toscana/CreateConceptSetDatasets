@@ -244,15 +244,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         if (length(cod_system_indataset) == 0) {
 
           # TODO write test and then activate polars modification to test it
-          used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
+          # used_df <- used_df[, c(col_concept, "Filter") := 0, ]
 
-          used_df <- used_df[, c(col_concept, "Filter") := 0, ]
+          test_vect <- list()
+          test_vect[[col_concept]] <- pl$lit(0L)
+          test_vect[["Filter"]] <- pl$lit(0L)
 
-          # test_vect <- list()
-          # test_vect[[col_concept]] <- pl$lit(0L)
-          # test_vect[["Filter"]] <- pl$lit(0L)
-          #
-          # lazy_frame <- lazy_frame$with_columns(!!!test_vect)
+          lazy_frame <- lazy_frame$with_columns(!!!test_vect)
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
             lazy_frame <- lazy_frame$with_columns(pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
@@ -270,7 +268,6 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 # NOTE next or break? all codes is for all type of codes or just one?
                 # used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
 
-                test_col <- "d"
                 test_vect <- list()
                 test_vect[["Filter"]] <- pl$lit(1L)
                 test_vect[[col_concept]] <- codvar[[dom]][[df2]][1]
@@ -349,7 +346,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
             # TODO add tests regarding exclusion of codes
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-                cod_system_indataset1_excl<-unique(used_df[,get(vocabulary[[dom]][[df2]])])
+                cod_system_indataset1_excl <- as.list(lazy_frame$select(pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
                 cod_system_indataset_excl<-Reduce(intersect, list(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]])))
               } else {
                 cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])

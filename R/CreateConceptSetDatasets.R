@@ -257,18 +257,25 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           for (col in codvar[[conc_dom]][[df2]]) {
             lazy_frame <- lazy_frame$with_columns(pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
 
-            used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
-
             for (type_cod in cod_system_indataset) {
               codes_rev <- concept_set_codes[[concept]][[type_cod]]
 
               lower_codes_rev <- tolower(as.character(codes_rev))
               all_codes_str <- c("all", "all codes", "all_codes")
+
+              # TODO add tests
               if (any(all_codes_str %in% lower_codes_rev)) {
                 print(paste("Using all codes for concept", concept))
-                used_df[, Filter:=1]
+                # used_df[, Filter:=1]
                 # NOTE next or break? all codes is for all type of codes or just one?
-                used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
+                # used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
+
+                test_col <- "d"
+                test_vect <- list()
+                test_vect[["Filter"]] <- pl$lit(1L)
+                test_vect[[col_concept]] <- codvar[[dom]][[df2]][1]
+                lazy_frame <- lazy_frame$with_columns(!!!test_vect)
+
                 next
               }
 
@@ -292,16 +299,36 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                   pattern <- paste0(gsub("\\.", "", pattern_base), "$", collapse = "|")
                 }
 
-                if (!missing(vocabulary) && dom %in% names(vocabulary)) {
-                  vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
-                }
+                # if (!missing(vocabulary) && dom %in% names(vocabulary)) {
+                #   vocab_dom_df2_eq_type_cod <- used_df[, get(vocabulary[[dom]][[df2]])] == type_cod
+                # }
 
-                used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern),
-                        c("Filter", col_concept) := list(1, col)]
+#                 used_df[vocab_dom_df2_eq_type_cod & stringr::str_detect(get(column_to_search), pattern),
+#                         c("Filter", col_concept) := list(1, col)]
+
+                # TODO add otherwise. Test "two types of vocabularies" fails sinceold Filter column is reset to null at second cycle
+                test_vect <- list()
+                test_vect[["Filter"]] <- 1L
+                test_vect[[col_concept]] <- pl$lit(col)
+                test_vect_oth <- list()
+                test_vect_oth[["Filter"]] <- "Filter"
+                test_vect_oth[[col_concept]] <- col_concept
+                test_vect_base <- list()
+                test_vect_base[["Filter"]] <- pl$coalesce(pl$col("^Filter$"), 0L)
+                test_vect_base[[col_concept]] <- pl$coalesce(pl$col(paste0("^", col_concept, "$")), 0L)
+                lazy_frame <- lazy_frame$with_columns(
+                  !!!test_vect_base
+                )$with_columns(
+                  pl$when(
+                    pl$col(vocabulary[[dom]][[df2]]) == type_cod & pl$col(column_to_search)$str$contains(pattern)
+                  )$then(
+                    pl$struct(!!!test_vect))$otherwise(pl$struct(!!!test_vect_oth))$struct$unnest()
+                  )
 
               } else {
                 for (EAVtab_dom in EAVtables[[dom]]) {
                   if (df2 %in% EAVtab_dom[[1]][[1]]) {
+                    # TODO add test to check if changes to polars are working
                     rn0_ = used_df[,get(vocabulary[[dom]][[df2]])] == type_cod
                     if(!any(rn0_))
                       next
@@ -309,11 +336,18 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                     rnx_ = paste0("^(",gsub("\\*", ".", paste(gsub("\\.", "", codes_rev), collapse = "|")),")")
                     rn1_ = stringr::str_detect(used_df[rn0_,get(paste0(col, "_tmp"))], rnx_)
                     rn0_[rn0_] = rn1_
-                    used_df[rn0_, c("Filter", paste0("Col_", concept)) := list(1, paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))]
+                    # used_df[rn0_, c("Filter", paste0("Col_", concept)) := list(1, paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))]
+                    test_vect <- list()
+                    test_vect[["Filter"]] <- 1L
+                    test_vect[[col_concept]] <- pl$lit(paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))
+                    lazy_frame <- lazy_frame$with_columns(pl$when(vocab_dom_df2_eq_type_cod & pl$col(column_to_search)$str$contains(pattern)
+                    )$then(pl$struct(!!!test_vect))$struct$unnest())
                   }
                 }
               }
             }
+
+            used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
 
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {

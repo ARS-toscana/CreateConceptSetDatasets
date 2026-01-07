@@ -459,20 +459,19 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
     tryCatch(
       error = function(cnd) {
-        final_concept <- data.table::data.table()
+        pl$LazyFrame()$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
       },
-      {lazy_frame <- pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))
-      final_concept <- data.table::data.table(as.data.frame(lazy_frame$collect()))}
+      lazy_frame <- pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
     )
 
-    if (use_qs) {
-      qs::qsave(get(final_concept),
-                file = paste0(diroutput, "/", concept, ".qs"),
-                preset = "high", nthreads = n_threads)
-    } else {
-      save(final_concept, file = paste0(diroutput, "/", concept, ".RData"))
-    }
-    rm(final_concept)
+    # if (use_qs) {
+    #   qs::qsave(get(final_concept),
+    #             file = paste0(diroutput, "/", concept, ".qs"),
+    #             preset = "high", nthreads = n_threads)
+    # } else {
+    #   save(final_concept, file = paste0(diroutput, "/", concept, ".RData"))
+    # }
+    # rm(final_concept)
 
     for (single_file in partial_concepts[stringr::str_detect(sub("~.*", "", partial_concepts), paste0("^", concept, "$"))]) {
       file.remove(paste0(diroutput, "/", single_file, ".parquet"))

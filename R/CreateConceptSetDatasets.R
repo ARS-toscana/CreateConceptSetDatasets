@@ -457,18 +457,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     final_concept <- data.table::data.table()
     list_final_concept <- list(final_concept)
 
-    for (single_file in partial_concepts[stringr::str_detect(sub("~.*", "", partial_concepts), paste0("^", concept, "$"))]) {
-      if (use_qs) {
-        assign(single_file, qs::qread(file = paste0(diroutput, "/", single_file, ".qs")))
-      } else {
-        list_final_concept <- append(list_final_concept,
-                                     list(data.table::data.table(as.data.frame(
-                                       pl$read_parquet(paste0(diroutput, "/", single_file, ".parquet"))))))
-      }
-    }
-
-    final_concept <- data.table::rbindlist(list_final_concept, fill = T)
-    rm(list_final_concept)
+    tryCatch(
+      error = function(cnd) {
+        final_concept <- data.table::data.table()
+      },
+      {lazy_frame <- pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))
+      final_concept <- data.table::data.table(as.data.frame(lazy_frame$collect()))}
+    )
 
     if (use_qs) {
       qs::qsave(get(final_concept),

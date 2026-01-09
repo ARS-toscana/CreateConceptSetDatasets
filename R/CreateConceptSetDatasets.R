@@ -120,7 +120,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
         library(polars)
 
-        # TODO continue from here
+        # Need to use schema_overrides at least for codvar at importation to retain leading/trailing 0s in codes which seems float
         newlist <- list()
         for (change_cols in c("person_id", codvar[[dom]][[df2]])) {
           newlist[[change_cols]] <- pl$String
@@ -249,7 +249,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           # used_df <- used_df[, c(col_concept, "Filter") := 0, ]
 
           test_vect <- list()
-          test_vect[[col_concept]] <- pl$lit(0L)
+          test_vect[[col_concept]] <- pl$lit(NA_character_)
           test_vect[["Filter"]] <- pl$lit(0L)
 
           lazy_frame <- lazy_frame$with_columns(!!!test_vect)

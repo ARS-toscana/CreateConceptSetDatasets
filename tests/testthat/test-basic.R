@@ -283,18 +283,18 @@ test_that("two types of vocabularies", {
 
 test_that("mismatched vocabulary", {
   create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,
-                               "a"       ,"ICD9"                  ,"001.0")
-  expect_equal(simple_CCD(concept_set_codes =	list(spam = list(ICD10 = "001.0"))),
+                               "a"       ,"ICD10"                  ,"001.0")
+  expect_equal(simple_CCD(concept_set_codes =	list(spam = list(ICD9 = "001.0"))),
                create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=))
 })
 
 test_that("mismatched vocabulary only one retrieval", {
   create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,
-                               "a"       ,"ICD10"                 ,"001.0",
-                               "a"       ,"ICD9"                  ,"001.0")
-  expect_equal(simple_CCD(concept_set_codes =	list(spam = list(ICD10 = "001.0"))),
+                               "a"       ,"ICD9"                 ,"001.0",
+                               "a"       ,"ICD10"                  ,"001.0")
+  expect_equal(simple_CCD(concept_set_codes =	list(spam = list(ICD9 = "001.0"))),
                create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,
-                                     "a"       ,"ICD10"                  ,"001.0"))
+                                     "a"       ,"ICD9"                  ,"001.0"))
 })
 
 test_that("mismatched domains", {
@@ -309,7 +309,7 @@ test_that("search code in wrong existing column", {
                                "a"       ,"ICD9"                  ,"001.0")
   x <- create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=)
   data.table::setnames(x, c("event_free_text", "codvar"), c("codvar", "event_code"))
-  x[, Col := "event_free_text"]
+  x[, event_code := as.numeric(event_code)]
   expect_equal(simple_CCD(codvar = list(Diagnosis = list(EVENTS = "event_free_text"))),
                x)
 })
@@ -425,6 +425,8 @@ test_that("simple retrieval (also not first)", {
                                      "a"       ,"ICD9"                  ,"001.0",
                                      "b"       ,"ICD9"                  ,"999.9")[, Table_cdm := NULL][order(person_id), ])
 })
+
+# TODO add type of vocaulary missing case
 
 # TODO rework dateformat using maybe anytime and another package for dates management
 # TODO add tests for additional dates formats?

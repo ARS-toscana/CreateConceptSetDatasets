@@ -85,9 +85,17 @@ create_and_save_EVENTS_table <- function(...) {
 }
 
 # Create a result file based on an EVENT table
-create_EVENTS_results <- function(...) {
+create_EVENTS_results <- function(..., datevar = NULL) {
   x <- create_EVENTS_table(...)
   data.table::setnames(x, "event_code", "codvar")
+  if (!is.null(datevar)) {
+    if (nrow(x) > 0) {
+      x[, (datevar) := lubridate::ymd(.SD), .SDcols = datevar]
+    } else {
+      x[, (datevar) := as.Date(integer(0))]
+    }
+
+  }
   x[, Col := "event_code"][, Table_cdm := "EVENTS"]
   return(x)
 }

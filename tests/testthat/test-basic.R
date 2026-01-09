@@ -342,8 +342,7 @@ test_that("Specifyng datevar works", {
   create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,end_date_record=,
                                "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
   result <- create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=,
-                                  "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
-  result[, end_date_record := as.character(lubridate::ymd(end_date_record))]
+                                  "a"       ,"ICD9"                  ,"001.0"    ,"20250101", datevar = c("end_date_record"))
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd"),
                result)
@@ -353,8 +352,7 @@ test_that("filter_expression works when condition TRUE", {
   create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,end_date_record=,
                                "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
   result <- create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=,
-                                  "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
-  result[, end_date_record := as.character(lubridate::ymd(end_date_record))]
+                                  "a"       ,"ICD9"                  ,"001.0"    ,"20250101", datevar = c("end_date_record"))
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
                           filter_expression = "pl$col('person_id') == 'a' & pl$col('end_date_record') > pl$date(2020, 01, 01)"),
@@ -367,7 +365,7 @@ test_that("filter_expression works when condition FALSE", {
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
                           filter_expression = "pl$col('person_id') == 'b' & pl$col('end_date_record') > pl$date(2020, 01, 01)"),
-               create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=))
+               create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=, datevar = c("end_date_record")))
 })
 
 test_that("filter_expression works when condition FALSE even for non-equi join", {
@@ -376,7 +374,7 @@ test_that("filter_expression works when condition FALSE even for non-equi join",
   expect_equal(simple_CCD(datevar = list(Diagnosis = list(EVENTS = "end_date_record")),
                           dateformat= "YYYYmmdd",
                           filter_expression = "pl$col('person_id') == 'a' & pl$col('end_date_record') > pl$date(2025, 06, 01)"),
-               create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=))
+               create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=, datevar = c("end_date_record")))
 })
 
 # TODO test if filter_expression is done before the code extraction or not
@@ -384,8 +382,7 @@ test_that("filter_expression works even on renamed columns", {
   create_and_save_EVENTS_table(person_id=,event_record_vocabulary=,event_code=,end_date_record=,
                                "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
   result <- create_EVENTS_results(person_id=,event_record_vocabulary=,event_code=,end_date_record=,
-                                  "a"       ,"ICD9"                  ,"001.0"    ,"20250101")
-  result[, end_date_record := as.character(lubridate::ymd(end_date_record))]
+                                  "a"       ,"ICD9"                  ,"001.0"    ,"20250101", datevar = c("end_date_record"))
   data.table::setnames(result, c("person_id", "end_date_record"), c("who", "when"))
   expect_equal(simple_CCD(rename_col = list(who = list(Diagnosis = list(EVENTS = "person_id")),
                                             when = list(Diagnosis = list(EVENTS = "end_date_record"))),

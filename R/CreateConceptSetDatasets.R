@@ -107,6 +107,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       #   next
       # }
 
+      polars_calls_list <- list()
+
       if (extension_flag) {
         files <- list.files(dirinput)
         file_name <- files[stringr::str_detect(files, df2)][[1]]
@@ -438,7 +440,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         partial_concepts <- append(partial_concepts, name_export_df)
 
         disk_path <- paste0(diroutput, "/", concept, "~", df2, "~", dom, ".parquet")
-        lazy_frame$sink_parquet(disk_path)
+        lazy_frame <- lazy_frame$lazy_sink_parquet(disk_path)
+
+        polars_calls_list <- append(polars_calls_list, lazy_frame)
 
         # filtered_concept <- data.table::data.table(as.data.frame(lazy_frame$collect()))
         rm(lazy_frame)
@@ -447,6 +451,8 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       # rm(used_df)
       if (!missing(EAVtables))
         rm(used_dfAEVs)
+
+      pl$collect_all(polars_calls_list, engine = "streaming")
 
     }
   }

@@ -17,7 +17,7 @@ load_result <- function(filename, dirout) {
   if ("RData" %in% sub(".*\\.", "", list.files(dirout))) {
     get(load(file.path(dirout, paste0(filename, ".RData")))[[1]])[, lapply(.SD, as.character)]
   } else if ("parquet" %in% sub(".*\\.", "", list.files(dirout))) {
-    data.table::data.table(as.data.frame(pl$read_parquet(file.path(dirout, paste0(filename, ".parquet")))))
+    data.table::data.table(as.data.frame(polars::pl$read_parquet(file.path(dirout, paste0(filename, ".parquet")))))
   }
 
 }

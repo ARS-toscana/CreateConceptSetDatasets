@@ -120,29 +120,29 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       if (extension == "dta") {used_df <- data.table::as.data.table(haven::read_dta(path))
       } else if (extension == "csv") {
 
-        library(polars)
-
         # Need to use schema_overrides at least for codvar at importation to retain leading/trailing 0s in codes which seems float
         newlist <- list()
         for (change_cols in c("person_id", codvar[[dom]][[df2]])) {
-          newlist[[change_cols]] <- pl$String
+          newlist[[change_cols]] <- polars::pl$String
         }
 
-        lazy_frame_df2 <- pl$scan_csv(path, schema_overrides = newlist)
+
+
+        lazy_frame_df2 <- polars::pl$scan_csv(path, schema_overrides = newlist)
 
       } else if (extension == "RData") {assign('used_df', get(load(path)))
       } else {stop("File extension not recognized. Please use a supported file")}
 
       if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
         # Exclude those records with no specified vocabulary
-        lazy_frame_df2 <- lazy_frame_df2$filter(pl$col(vocabulary[[dom]][[df2]]) != "")
+        lazy_frame_df2 <- lazy_frame_df2$filter(polars::pl$col(vocabulary[[dom]][[df2]]) != "")
       }
 
       if (!missing(dateformat)){
         for (datevar_dom_df2 in datevar[[dom]][[df2]]) {
 
           test_vect <- list()
-          test_vect[[datevar_dom_df2]] <- pl$String
+          test_vect[[datevar_dom_df2]] <- polars::pl$String
           lazy_frame_df2 <- lazy_frame_df2$cast(!!!test_vect)
 
           first_char <- substring(dateformat, 1,1)
@@ -154,7 +154,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
             new_dateformat <- "%d%m%Y"
           }
 
-          lazy_frame_df2 <- lazy_frame_df2$with_columns(pl$col(datevar_dom_df2)$str$to_date(new_dateformat))
+          lazy_frame_df2 <- lazy_frame_df2$with_columns(polars::pl$col(datevar_dom_df2)$str$to_date(new_dateformat))
         }
       }
 
@@ -238,7 +238,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
         # TODO to be removed. When using lazyframes this might increase computation time
         if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-          cod_system_indataset1 <- as.list(lazy_frame$select(pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
+          cod_system_indataset1 <- as.list(lazy_frame$select(polars::pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
           cod_system_indataset1 <- unlist(cod_system_indataset1)
           cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
         } else {
@@ -251,13 +251,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           # used_df <- used_df[, c(col_concept, "Filter") := 0, ]
 
           test_vect <- list()
-          test_vect[[col_concept]] <- pl$lit(NA_character_)
-          test_vect[["Filter"]] <- pl$lit(0L)
+          test_vect[[col_concept]] <- polars::pl$lit(NA_character_)
+          test_vect[["Filter"]] <- polars::pl$lit(0L)
 
           lazy_frame <- lazy_frame$with_columns(!!!test_vect)
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
-            lazy_frame <- lazy_frame$with_columns(pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
+            lazy_frame <- lazy_frame$with_columns(polars::pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
 
             for (type_cod in cod_system_indataset) {
               codes_rev <- concept_set_codes[[concept]][[type_cod]]
@@ -273,7 +273,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 # used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
 
                 test_vect <- list()
-                test_vect[["Filter"]] <- pl$lit(1L)
+                test_vect[["Filter"]] <- polars::pl$lit(1L)
                 test_vect[[col_concept]] <- codvar[[dom]][[df2]][1]
                 lazy_frame <- lazy_frame$with_columns(!!!test_vect)
 
@@ -309,21 +309,21 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
                 test_vect <- list()
                 test_vect[["Filter"]] <- 1L
-                test_vect[[col_concept]] <- pl$lit(col)
+                test_vect[[col_concept]] <- polars::pl$lit(col)
                 test_vect_oth <- list()
                 test_vect_oth[["Filter"]] <- "Filter"
                 test_vect_oth[[col_concept]] <- col_concept
                 test_vect_base <- list()
-                test_vect_base[["Filter"]] <- pl$coalesce(pl$col("^Filter$"), 0L)
-                test_vect_base[[col_concept]] <- pl$coalesce(pl$col(paste0("^", col_concept, "$")), 0L)
+                test_vect_base[["Filter"]] <- polars::pl$coalesce(polars::pl$col("^Filter$"), 0L)
+                test_vect_base[[col_concept]] <- polars::pl$coalesce(polars::pl$col(paste0("^", col_concept, "$")), 0L)
                 lazy_frame <- lazy_frame$with_columns(
                   !!!test_vect_base
                 )$with_columns(
-                  pl$when(
-                    pl$col(vocabulary[[dom]][[df2]]) == type_cod & pl$col(column_to_search)$str$contains(pattern)
+                  polars::pl$when(
+                    polars::pl$col(vocabulary[[dom]][[df2]]) == type_cod & polars::pl$col(column_to_search)$str$contains(pattern)
                   )$then(
-                    pl$struct(!!!test_vect))$otherwise(
-                      pl$struct(!!!test_vect_oth)
+                    polars::pl$struct(!!!test_vect))$otherwise(
+                      polars::pl$struct(!!!test_vect_oth)
                     )$struct$unnest()
                 )
 
@@ -341,9 +341,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                     # used_df[rn0_, c("Filter", paste0("Col_", concept)) := list(1, paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))]
                     test_vect <- list()
                     test_vect[["Filter"]] <- 1L
-                    test_vect[[col_concept]] <- pl$lit(paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))
-                    lazy_frame <- lazy_frame$with_columns(pl$when(vocab_dom_df2_eq_type_cod & pl$col(column_to_search)$str$contains(pattern)
-                    )$then(pl$struct(!!!test_vect))$struct$unnest())
+                    test_vect[[col_concept]] <- polars::pl$lit(paste0(EAVtab_dom[[1]][[2]], EAVtab_dom[[1]][[3]]))
+                    lazy_frame <- lazy_frame$with_columns(polars::pl$when(vocab_dom_df2_eq_type_cod & polars::pl$col(column_to_search)$str$contains(pattern)
+                    )$then(polars::pl$struct(!!!test_vect))$struct$unnest())
                   }
                 }
               }
@@ -352,7 +352,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
             # TODO add tests regarding exclusion of codes
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-                cod_system_indataset1_excl <- as.list(lazy_frame$select(pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
+                cod_system_indataset1_excl <- as.list(lazy_frame$select(polars::pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
                 cod_system_indataset_excl<-Reduce(intersect, list(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]])))
               } else {
                 cod_system_indataset_excl<-names(concept_set_codes_excl[[concept]])
@@ -385,16 +385,16 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 # test_vect_base can be skipped here: first we include then exclude
                 test_vect <- list()
                 test_vect[["Filter"]] <- 0L
-                test_vect[[col_concept]] <- pl$lit(col)
+                test_vect[[col_concept]] <- polars::pl$lit(col)
                 test_vect_oth <- list()
                 test_vect_oth[["Filter"]] <- "Filter"
                 test_vect_oth[[col_concept]] <- col_concept
                 lazy_frame <- lazy_frame$with_columns(
-                  pl$when(
-                    pl$col(vocabulary[[dom]][[df2]]) == type_cod & pl$col(column_to_search)$str$contains(pattern)
+                  polars::pl$when(
+                    polars::pl$col(vocabulary[[dom]][[df2]]) == type_cod & polars::pl$col(column_to_search)$str$contains(pattern)
                   )$then(
-                    pl$struct(!!!test_vect))$otherwise(
-                      pl$struct(!!!test_vect_oth)
+                    polars::pl$struct(!!!test_vect))$otherwise(
+                      polars::pl$struct(!!!test_vect_oth)
                     )$struct$unnest()
                 )
 
@@ -406,7 +406,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
         if (addtabcol == F) {
           lazy_frame <- lazy_frame$drop(col_concept)
-          lazy_frame <- lazy_frame$filter(pl$col("Filter") == 1)$drop("Filter")
+          lazy_frame <- lazy_frame$filter(polars::pl$col("Filter") == 1)$drop("Filter")
         } else {
           if ("Col" %in% names(lazy_frame)) {
             # Col <- NULL
@@ -419,7 +419,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           test <- "Col"
           names(test) <- col_concept
           lazy_frame <- lazy_frame$rename(!!!test)
-          lazy_frame <- lazy_frame$filter(pl$col("Filter") == 1)$drop("Filter")$with_columns(Table_cdm = pl$lit(df2))
+          lazy_frame <- lazy_frame$filter(polars::pl$col("Filter") == 1)$drop("Filter")$with_columns(Table_cdm = polars::pl$lit(df2))
         }
 
         # used_df <- data.table::data.table(as.data.frame(lazy_frame$collect()))
@@ -433,7 +433,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
 
         if (!missing(add_conceptset_name)) {
-          if (add_conceptset_name==T) lazy_frame <- lazy_frame$with_columns(Conceptset = pl$lit(concept))
+          if (add_conceptset_name==T) lazy_frame <- lazy_frame$with_columns(Conceptset = polars::pl$lit(concept))
         }
 
         name_export_df <- paste0(concept, "~", df2, "~", dom)
@@ -452,7 +452,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
       if (!missing(EAVtables))
         rm(used_dfAEVs)
 
-      pl$collect_all(polars_calls_list, engine = "streaming")
+      polars::pl$collect_all(polars_calls_list, engine = "streaming")
 
     }
   }
@@ -465,9 +465,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
     tryCatch(
       error = function(cnd) {
-        pl$LazyFrame()$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
+        polars::pl$LazyFrame()$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
       },
-      lazy_frame <- pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
+      lazy_frame <- polars::pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
     )
 
     # if (use_qs) {

@@ -167,6 +167,7 @@ dfs_list <- lapply(1:10, function(x) {
   create_MEDICINES_table(temp_df)
 })
 
+
 # dir.create(file.path(folder, "i_input"), showWarnings = FALSE)
 #
 # fwrite(copy(final_df)[, .SD[sample(.N, assigned_prob[[unlist(.BY)]], replace = TRUE)], keyby = "concept_id"],

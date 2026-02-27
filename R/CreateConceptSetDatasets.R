@@ -258,30 +258,40 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           lazy_frame <- lazy_frame$with_columns(!!!test_vect)
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
+            concept_codes <- concept_set_codes[[concept]]
+            concept_codes <- rbindlist(lapply(names(concept_codes),
+                                              function(x) data.table(coding_system = x,
+                                                                     code = tolower(as.character(concept_codes[[x]])))))
+
             browser()
-            lazy_frame <- lazy_frame$with_columns(polars::pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
+            lazy_frame <- lazy_frame$with_columns(polars::pl$col(col)$alias(paste0(col, "_tmp")))
+
+            lazy_frame_test <- data.table::copy(lazy_frame)
+            test <- as.data.frame(lazy_frame_test$collect())
 
             for (type_cod in cod_system_indataset) {
-              codes_rev <- rbindlist(lapply(names(ll_dt), function(x) data.table(coding_system = x, code = as.character(ll_dt[[x]]))))
+              concept_codes <- concept_set_codes[[concept]]
+              concept_codes <- rbindlist(lapply(names(concept_codes),
+                                                function(x) data.table(coding_system = x,
+                                                                       code = tolower(as.character(concept_codes[[x]])))))
               codes_rev <- concept_set_codes[[concept]][[type_cod]]
 
-              lower_codes_rev <- tolower(as.character(codes_rev))
-              all_codes_str <- c("all", "all codes", "all_codes")
-
-              # TODO add tests
-              if (any(all_codes_str %in% lower_codes_rev)) {
-                print(paste("Using all codes for concept", concept))
-                # used_df[, Filter:=1]
-                # NOTE next or break? all codes is for all type of codes or just one?
-                # used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
-
-                test_vect <- list()
-                test_vect[["Filter"]] <- polars::pl$lit(1L)
-                test_vect[[col_concept]] <- codvar[[dom]][[df2]][1]
-                lazy_frame <- lazy_frame$with_columns(!!!test_vect)
-
-                next
-              }
+              # all_codes_str <- c("all", "all codes", "all_codes")
+              #
+              # # TODO add tests
+              # if (any(all_codes_str %in% lower_codes_rev)) {
+              #   print(paste("Using all codes for concept", concept))
+              #   # used_df[, Filter:=1]
+              #   # NOTE next or break? all codes is for all type of codes or just one?
+              #   # used_df[, list(col_concept) := codvar[[dom]][[df2]][1]]
+              #
+              #   test_vect <- list()
+              #   test_vect[["Filter"]] <- polars::pl$lit(1L)
+              #   test_vect[[col_concept]] <- codvar[[dom]][[df2]][1]
+              #   lazy_frame <- lazy_frame$with_columns(!!!test_vect)
+              #
+              #   next
+              # }
 
               if (df2 %in% dataset[[dom]]) {################### IF I GIVE VOCABULARY IN INPUT
                 pattern_base <- paste0("^", codes_rev)

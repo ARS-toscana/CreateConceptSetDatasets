@@ -237,15 +237,16 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         }
 
         # TODO to be removed. When using lazyframes this might increase computation time
-        if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-          cod_system_indataset1 <- as.list(lazy_frame$select(polars::pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
-          cod_system_indataset1 <- unlist(cod_system_indataset1)
-          cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
-        } else {
-          cod_system_indataset <- names(concept_set_codes[[concept]])
-        }
+        # if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
+        #   cod_system_indataset1 <- as.list(lazy_frame$select(polars::pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(), as_series = FALSE)
+        #   cod_system_indataset1 <- unlist(cod_system_indataset1)
+        #   cod_system_indataset <- intersect(cod_system_indataset1,names(concept_set_codes[[concept]]))
+        # } else {
+        #   cod_system_indataset <- names(concept_set_codes[[concept]])
+        # }
 
-        if (length(cod_system_indataset) == 0) {
+        # if (length(cod_system_indataset) == 0) {
+        if (FALSE) {
 
           # TODO write test and then activate polars modification to test it
           # used_df <- used_df[, c(col_concept, "Filter") := 0, ]
@@ -257,9 +258,11 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
           lazy_frame <- lazy_frame$with_columns(!!!test_vect)
         } else {
           for (col in codvar[[conc_dom]][[df2]]) {
+            browser()
             lazy_frame <- lazy_frame$with_columns(polars::pl$col(col)$str$replace("\\.", "")$alias(paste0(col, "_tmp")))
 
             for (type_cod in cod_system_indataset) {
+              codes_rev <- rbindlist(lapply(names(ll_dt), function(x) data.table(coding_system = x, code = as.character(ll_dt[[x]]))))
               codes_rev <- concept_set_codes[[concept]][[type_cod]]
 
               lower_codes_rev <- tolower(as.character(codes_rev))

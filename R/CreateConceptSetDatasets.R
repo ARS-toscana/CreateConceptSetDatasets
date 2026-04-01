@@ -60,7 +60,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                                      discard_from_environment = F, dirinput = getwd(), diroutput = getwd(),
                                      extension = F, vocabularies_with_dot_wildcard, vocabularies_with_keep_dot,
                                      vocabularies_with_exact_search, vocabularies_with_exact_search_not_dot, use_qs = F,
-                                     aggregate_concepts=NULL, add_conceptset_name=T) {
+                                     aggregate_concepts=NULL, add_conceptset_name=T, suffix=NULL) {
 
   # TODO fix verbose
   if (!verbose) defer(options(warn = 1))
@@ -139,6 +139,7 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
         lazy_frame_tmp <- copy(lazy_frame_df2)
         cod_system_indataset1 <- as.list(lazy_frame_tmp$select(polars::pl$col(vocabulary[[dom]][[df2]]))$unique()$collect(engine = "streaming"), as_series = FALSE)
         cod_system_indataset1 <- unlist(cod_system_indataset1)
+        cod_system_indataset1_excl <- unlist(cod_system_indataset1)
       }
 
       if (!missing(dateformat)){
@@ -288,16 +289,16 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 pattern <- gsub("\\*", ".", pattern_no_dot)
                 vocab_dom_df2_eq_type_cod <- TRUE
 
-                if (!missing(vocabularies_with_dot_wildcard) && (type_cod %in% vocabularies_with_dot_wildcard || vocabularies_with_dot_wildcard == "any")) {
+                if (!missing(vocabularies_with_dot_wildcard) && (type_cod %in% vocabularies_with_dot_wildcard || "any" %in% vocabularies_with_dot_wildcard)) {
                   pattern <- paste(pattern_base, collapse = "|")
                   column_to_search <- col
-                } else if (!missing(vocabularies_with_keep_dot) && (type_cod %in% vocabularies_with_keep_dot || vocabularies_with_keep_dot == "any")) {
+                } else if (!missing(vocabularies_with_keep_dot) && (type_cod %in% vocabularies_with_keep_dot || "any" %in% vocabularies_with_keep_dot)) {
                   pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
                   column_to_search <- col
-                } else if (!missing(vocabularies_with_exact_search) && (type_cod %in% vocabularies_with_exact_search || vocabularies_with_exact_search == "any")) {
+                } else if (!missing(vocabularies_with_exact_search) && (type_cod %in% vocabularies_with_exact_search || "any" %in% vocabularies_with_exact_search)) {
                   pattern <- paste0(pattern_base, "$", collapse = "|")
                   column_to_search <- col
-                } else if (!missing(vocabularies_with_exact_search_not_dot) && (type_cod %in% vocabularies_with_exact_search_not_dot || vocabularies_with_exact_search_not_dot == "any")) {
+                } else if (!missing(vocabularies_with_exact_search_not_dot) && (type_cod %in% vocabularies_with_exact_search_not_dot || "any" %in% vocabularies_with_exact_search_not_dot)) {
                   pattern <- paste0(gsub("\\.", "", pattern_base), "$", collapse = "|")
                 }
 
@@ -367,9 +368,9 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
             # TODO add tests regarding exclusion of codes
             if (!missing(concept_set_codes_excl)){
               if (!missing(vocabulary) && dom %in% names(vocabulary) && df2 %in% names(vocabulary[[dom]])) {
-                cod_system_indataset <- intersect(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]]))
+                cod_system_indataset_excl <- intersect(cod_system_indataset1_excl,names(concept_set_codes_excl[[concept]]))
               } else {
-                cod_system_indataset <- names(concept_set_codes_excl[[concept]])
+                cod_system_indataset_excl <- names(concept_set_codes_excl[[concept]])
               }
               for (type_cod_2 in cod_system_indataset_excl) {
                 codes_rev <- concept_set_codes_excl[[concept]][[type_cod_2]]
@@ -379,16 +380,16 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
                 column_to_search <- paste0(col, "_tmp")
                 vocab_dom_df2_eq_type_cod <- TRUE
 
-                if (!missing(vocabularies_with_dot_wildcard) && (type_cod_2 %in% vocabularies_with_dot_wildcard || vocabularies_with_dot_wildcard == "any")) {
+                if (!missing(vocabularies_with_dot_wildcard) && (type_cod_2 %in% vocabularies_with_dot_wildcard || "any" %in% vocabularies_with_dot_wildcard)) {
                   pattern <- paste(pattern_base, collapse = "|")
                   column_to_search <- col
-                } else if (!missing(vocabularies_with_keep_dot) && (type_cod_2 %in% vocabularies_with_keep_dot || vocabularies_with_keep_dot == "any")) {
+                } else if (!missing(vocabularies_with_keep_dot) && (type_cod_2 %in% vocabularies_with_keep_dot || "any" %in% vocabularies_with_keep_dot)) {
                   pattern <- paste(gsub("\\.", "\\\\.", pattern_base), collapse = "|")
                   column_to_search <- col
-                } else if (!missing(vocabularies_with_exact_search) && (type_cod_2 %in% vocabularies_with_exact_search || vocabularies_with_exact_search == "any")) {
+                } else if (!missing(vocabularies_with_exact_search) && (type_cod_2 %in% vocabularies_with_exact_search || "any" %in%vocabularies_with_exact_search)) {
                   pattern <- paste0(pattern_base, "$", collapse = "|")
                   column_to_search <- col
-                } else if (!missing(vocabularies_with_exact_search_not_dot) && (type_cod_2 %in% vocabularies_with_exact_search_not_dot || vocabularies_with_exact_search_not_dot == "any")) {
+                } else if (!missing(vocabularies_with_exact_search_not_dot) && (type_cod_2 %in% vocabularies_with_exact_search_not_dot || "any" %in% vocabularies_with_exact_search_not_dot)) {
                   pattern <- paste0(gsub("\\.", "", pattern_base), "$", collapse = "|")
                 }
 
@@ -477,11 +478,13 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
     final_concept <- data.table::data.table()
     list_final_concept <- list(final_concept)
 
+    final_concept_name <- if (!is.null(suffix)) paste0(concept, suffix) else concept
+
     tryCatch(
       error = function(cnd) {
-        polars::pl$LazyFrame()$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
+        polars::pl$LazyFrame()$sink_parquet(paste0(diroutput, "/", final_concept_name, ".parquet"))
       },
-      lazy_frame <- polars::pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))$sink_parquet(paste0(diroutput, "/", concept, ".parquet"))
+      lazy_frame <- polars::pl$scan_parquet(paste0(diroutput, "/", concept, "~", "*", ".parquet"))$sink_parquet(paste0(diroutput, "/", final_concept_name, ".parquet"))
     )
 
     # if (use_qs) {

@@ -164,10 +164,11 @@ CreateConceptSetDatasets <- function(dataset, codvar, datevar, EAVtables, EAVatt
 
       # TODO add test, then convert to polars
       if(!missing(rename_col)){
+
         ###################RENAME THE COLUMNS ID AND DATE
         for (elem in names(rename_col)) {
           data <- rename_col[[elem]]
-          if (data[[dom]][[df2]] %in% names(data.table::data.table(as.data.frame(lazy_frame_df2$collect())))) {
+          if (data[[dom]][[df2]] %in% names(lazy_frame_df2$collect_schema())) {
             # data.table::setnames(used_df, data[[dom]][[df2]], elem)
             test_vect <- elem
             names(test_vect) <- data[[dom]][[df2]]
